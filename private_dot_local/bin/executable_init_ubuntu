@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo apt install python-is-python3 tmux powerline hub bat meld ripgrep curl visidata awesome kitty tree neovim nodejs yarnpkg
