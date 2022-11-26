@@ -1,0 +1,9 @@
+[user]
+	email = setrofim@gmail.com
+	name = setrofim
+[merge]
+	tool = meld
+[color]
+	ui = auto
+[fetch]
+	prune = true

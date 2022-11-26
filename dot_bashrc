@@ -1,0 +1,154 @@
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+alias ll='ls -lh --color=auto'
+alias l='ls -1h --color=auto'
+alias df='df -h'
+alias du='du -h'
+alias halt='sudo halt'
+alias open='xdg-open'
+alias tmux='tmux -2'
+alias dict=sdcv
+alias vim=nvim
+alias cat=bat
+alias xclipb='xclip -selection clipboard'
+alias qtconsole='jupyter qtconsole --style stata-dark'
+alias spotify='alltray /usr/bin/spotify'
+alias git=hub
+alias ffprobe='/usr/bin/ffprobe -hide_banner'
+alias rg="rg -g '!tags'"
+alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
+
+# https://twitter.com/thingskatedid/status/1316074032379248640
+alias isvg='rsvg-convert | icat'
+alias icat='kitty ican --align=left'
+
+
+bind \\C-n:unix-filename-rubout
+
+COLORS=$(tput colors)
+
+function weather {
+    arg=$1
+
+    if [ "$arg" == "-v2" ]; then
+        curl http://v2.wttr.in/Cambridge
+    else
+        curl wttr.in/Cambridge
+    fi
+}
+
+function parse_git_branch {
+	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
+
+function _prompt_command {
+    local exit_code=$?
+    local exit_prompt=""
+
+    if [[ $COLORS -ge 256 ]]; then
+        local purp='\[\e[38;5;69m\]'
+        local red='\[\e[38;5;9m\]'
+        local reset='\[\e[0m\]'
+        local yell='\[\e\[\033[33m\]'
+        local green='\[\e[38;5;34m'
+        local blue='\[\e[38;5;4m\]'
+        local magen='\[\033[1;35m\]'
+    elif [[ $COLORS -ge 8 ]]; then
+        local purp='\e[1;34m'
+        local red='\e[0;31m'
+        local reset='\e[0m'
+        local yell='\e[0;33m'
+        local green='\e[0;32m'
+        local blue='\e[0;34m'
+        local magen='\e[0;35m'
+    fi
+
+    if [[ "$(id -u)" == "0" ]]; then
+        local who="$red"
+    else
+        local who="$green"
+    fi
+
+    history -a # append pervious command to history
+
+    branch=$(parse_git_branch)
+
+    echo $prompt
+    if [[ $COLORS -ge 8 ]]; then
+        PS1="${purp}┌─┤${yell}\D{%Y-%m-%dT%H:%M:%S}${purp}├─┤${who}\u@\h${purp}├─┤${blue}\w${purp}"
+        if [[ $branch != "" ]]; then
+            PS1+="├─┤${magen}$branch${purp}"
+
+        fi
+        if [[ $exit_code -gt 0 ]]; then
+            PS1+="├─┤${red}$exit_code${purp}"
+        fi
+        PS1+="│${reset}\n${purp}└┤\\\$${reset} "
+    else
+            PS1='\u@\h \w\n\$ '
+    fi
+}
+
+export PROMPT_COMMAND=_prompt_command
+
+export BROWSER=qutebrowser
+export EDITOR=nvim
+
+export PATH=$PATH:$HOME/go/bin
+export PATH=$PATH:$HOME/.gem/ruby/2.3.0/bin
+export PATH=$PATH:$HOME/.gem/ruby/2.7.0/bin
+export PATH=$PATH:$HOME/.cargo/bin
+export PATH=$PATH:$HOME/.local/bin
+
+export GITHUB_TOKEN=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
+
+export OPENAUDIBLE_HOME=$HOME/dopamine/audible/
+
+export JUPYTERLAB_DIR=$HOME/.local/share/jupyter/lab
+
+export QT_QPA_PLATFORMTHEME=gtk2
+export QT_STYLE_OVERRIDE=qt5ct-style
+
+export PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
+
+export MANWIDTH=100
+
+eval "$(dircolors ~/.config/dircolors)"
+
+# Colored man pages
+man() {
+    env \
+        LESS_TERMCAP_mb=$(printf "\e[1;34m") \
+        LESS_TERMCAP_md=$(printf "\e[1;34m") \
+        LESS_TERMCAP_me=$(printf "\e[0m") \
+        LESS_TERMCAP_se=$(printf "\e[0m") \
+        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+        LESS_TERMCAP_ue=$(printf "\e[0m") \
+        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+            man "$@"
+}
+
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<~/.ssh-agent-thing)"
+fi
+
+if [[ "$(which archey3)" != "" ]]; then
+    archey3
+fi
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Kitty shell integration.
+if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then
+    source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"
+fi
+
+# vim: set ft=bash :
