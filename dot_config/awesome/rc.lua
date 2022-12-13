@@ -596,7 +596,11 @@ globalkeys = gears.table.join(
         end),
     awful.key({ }, "XF86AudioMute",
         function ()
-                awful.util.spawn_with_shell("for s in $(pactl list sinks | grep -B1 RUNNING | cut -f2 -d# | egrep '[0-9]+'); do pactl set-sink-mute $s toggle; done")
+		 awful.util.spawn_with_shell("for s in $(pactl list sinks | grep -B1 RUNNING | cut -f2 -d# | egrep '[0-9]+'); do pactl set-sink-mute $s toggle; done")
+        end),
+    awful.key({ }, "XF86AudioStop",
+        function ()
+                awful.util.spawn_with_shell("for s in $(pactl list sources | grep -B1 RUNNING | cut -f2 -d# | egrep '[0-9]+'); do pactl set-source-mute $s toggle; done")
         end),
 
     awful.key({ }, "#172", -- "XF86AudioPlay",
@@ -620,8 +624,8 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "e",      function () awful.util.spawn_with_shell("thunar") end,
               {description="launch thunar", group="launcher"}),
 
-    awful.key({ }, "XF86AudioStop",      function () awful.util.spawn_with_shell("/home/setrofim/.local/bin/launch-spotify") end,
-              {description="launch spotify", group="launcher"}),
+    --awful.key({ }, "XF86AudioStop",      function () awful.util.spawn_with_shell("/home/setrofim/.local/bin/launch-spotify") end,
+              --{description="launch spotify", group="launcher"}),
 
     awful.key({ modkey,           }, "v",      function () awful.spawn("chromium") end,
               {description="launch browser", group="launcher"}),
