@@ -1,0 +1,58 @@
+windows:
+- active: true
+  geometry: !!binary |
+    AdnQywADAAAAAAeCAAABCgAAEX0AAAaNAAAHgwAAAQsAABF8AAAGjAAAAAAAAAAACgAAAAeDAAAB
+    CwAAEXwAAAaM
+  tabs:
+  - active: true
+    history:
+    - active: true
+      last_visited: '2023-01-05T20:34:13'
+      original-url: https://outlook.office.com/owa/
+      pinned: true
+      scroll-pos:
+        x: 0
+        y: 0
+      title: Email - Sergei Trofimov - Outlook
+      url: https://outlook.office.com/mail/
+      zoom: 1.0
+  - history:
+    - active: true
+      last_visited: '2023-01-05T20:35:25'
+      pinned: true
+      scroll-pos:
+        x: 0
+        y: 0
+      title: Calendar - Sergei Trofimov - Outlook
+      url: https://outlook.office.com/calendar/view/week
+      zoom: 1.0
+  - history:
+    - active: true
+      last_visited: '2023-01-05T20:36:44'
+      pinned: true
+      scroll-pos:
+        x: 0
+        y: 0
+      title: Inbox - sergeitrofimov86@googlemail.com - Gmail
+      url: https://mail.google.com/mail/u/0/#inbox
+      zoom: 1.0
+  - history:
+    - active: true
+      last_visited: '2023-01-05T20:38:04'
+      pinned: true
+      scroll-pos:
+        x: 0
+        y: 0
+      title: Inbox - setrofim@gmail.com - Gmail
+      url: https://mail.google.com/mail/u/1/#inbox
+      zoom: 1.0
+  - history:
+    - active: true
+      last_visited: '2023-01-05T20:40:04'
+      pinned: true
+      scroll-pos:
+        x: 0
+        y: 0
+      title: Inbox - sergeitrofimov.amazon@googlemail.com - Gmail
+      url: https://mail.google.com/mail/u/2/#inbox
+      zoom: 1.0

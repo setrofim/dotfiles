@@ -1,0 +1,33 @@
+[Default Applications]
+x-scheme-handler/tg=userapp-Telegram Desktop-T28IY1.desktop
+x-scheme-handler/discord-378308708360519681=discord-378308708360519681.desktop
+text/html=qutebrowser-main.desktop
+x-scheme-handler/http=qutebrowser-main.desktop
+x-scheme-handler/https=qutebrowser-main.desktop
+x-scheme-handler/about=qutebrowser-main.desktop
+x-scheme-handler/unknown=chromium.desktop
+x-scheme-handler/discord-413081698159296512=discord-413081698159296512.desktop
+application/pdf=org.gnome.Evince.desktop
+
+[Added Associations]
+x-scheme-handler/tg=userapp-Telegram Desktop-8FKFK1.desktop;userapp-Telegram Desktop-T28IY1.desktop;
+application/pdf=org.gnome.Evince.desktop;
+image/jpeg=org.nomacs.ImageLounge.desktop;
+image/png=org.nomacs.ImageLounge.desktop;gimp.desktop;
+video/mpeg=mpv.desktop;
+application/octet-stream=nvim.desktop;nvidia-settings.desktop;
+image/gif=chromium.desktop;
+video/x-matroska=mpv.desktop;
+video/mp4=mpv.desktop;fr.handbrake.ghb.desktop;
+text/plain=libreoffice-writer.desktop;
+text/csv=nvim.desktop;
+image/svg+xml=org.inkscape.Inkscape.desktop;
+application/epub+zip=FBReader.desktop;
+video/mp2t=mpv.desktop;fr.handbrake.ghb.desktop;
+inode/directory=fr.handbrake.ghb.desktop;kitty-open.desktop;
+application/vnd.rn-realmedia=mpv.desktop;
+text/x-nfo=vim.desktop;nvim.desktop;
+video/x-ms-wmv=mpv.desktop;
+video/webm=mpv.desktop;
+audio/flac=mpv.desktop;
+application/x-tar=org.gnome.FileRoller.desktop;vim.desktop;

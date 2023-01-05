@@ -96,11 +96,11 @@ end
 -- {{{ Menu
 -- Create a launcher widget and a main menu
 myawesomemenu = {
-   { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end}
+   { "hotkeys", function() return false, hotkeys_popup.show_help end, "/usr/share/icons/Arc/devices/24/input-keyboard.png" },
+   { "manual", terminal .. " -e man awesome", "/usr/share/icons/Arc/actions/24/help-about.png" },
+   { "edit config", editor_cmd .. " " .. awesome.conffile, "/usr/share/icons/Arc/categories/24/applications-system.png" },
+   { "restart", awesome.restart, "/usr/share/icons/Arc/actions/24/media-playlist-repeat.png" },
+   { "quit", function() awesome.quit() end, "/usr/share/icons/Arc/actions/24/application-exit.png" }
 }
 
 mymainmenu = awful.menu({ items = {
@@ -269,9 +269,9 @@ screen_config = {
                     }
             },
             {
-                    "steam",
+                    "feed",
                     {
-                            layout = awful.layout.suit.floating,
+                            layout = awful.layout.suit.tile,
                             screen = S_MAIN
                     }
             },
@@ -286,6 +286,13 @@ screen_config = {
                     "files",
                     {
                             layout = awful.layout.suit.tile,
+                            screen = S_MAIN
+                    }
+            },
+            {
+                    "steam",
+                    {
+                            layout = awful.layout.suit.floating,
                             screen = S_MAIN
                     }
             },
@@ -322,7 +329,14 @@ screen_config = {
                     }
             },
             {
-                    "misc",
+                    "irc",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                            screen = S_RIGHT_V
+                    }
+            },
+            {
+                    "www",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V
@@ -336,7 +350,7 @@ screen_config = {
                     }
             },
             {
-                    "www",
+                    "misc",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V
@@ -344,11 +358,18 @@ screen_config = {
             },
             -- Wall screen
             {
-                    "misc",
+                    "video",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_WALL,
-			    selected = true
+                            selected = true
+                    }
+            },
+            {
+                    "spotify",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                            screen = S_WALL
                     }
             }
         },
@@ -394,8 +415,74 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    --s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    s.mytaglist = awful.widget.taglist {
+            screen  = s,
+            filter  = awful.widget.taglist.filter.all,
+            widget_template = {
+                {
+                    {
+                        {
+                            {
+                                {
+                                    id     = 'index_role',
+                                    widget = wibox.widget.textbox,
+                                },
+                                widget  = wibox.container.margin,
+                            },
+                            bg     = nil,
+                            widget = wibox.container.background,
+                        },
+                        {
+                            {
+                                id     = 'icon_role',
+                                widget = wibox.widget.imagebox,
+                            },
+                            margins = 0,
+                            widget  = wibox.container.margin,
+                        },
+                        {
+                            id     = 'text_role',
+                            widget = wibox.widget.textbox,
+                        },
+                        layout = wibox.layout.fixed.horizontal,
+                    },
+                    left  = 5,
+                    right = 5,
+                    widget = wibox.container.margin
+                },
+                id     = 'background_role',
+                widget = wibox.container.background,
+                -- Add support for hover colors and an index label
+                create_callback = function(self, c3, index, objects) --luacheck: no unused args
+                    self.index = index
+                    self:get_children_by_id('index_role')[1].markup = '<b> '..index..' </b>'
+                    self:connect_signal('mouse::enter', function()
+                        if self.bg ~= beautiful.bg_focus then
+                            self.backup     = self.bg
+                            self.has_backup = true
+                        end
+                        self.bg = beautiful.bg_focus
+                    end)
+                    self:connect_signal('mouse::leave', function()
+                        -- if the tag was selected, then the backed up background would be out of date.
+                        if s.tags[self.index].selected then
+                            self.backup = beautiful.bg_focus
+                        end
+                        if self.has_backup then
+                                self.bg = self.backup
+                        end
+                    end)
+                end,
+                update_callback = function(self, c3, index, objects) --luacheck: no unused args
+                    self.index = index
+                    self:get_children_by_id('index_role')[1].markup = '<b> '..index..' </b>'
+                end,
+            },
+            buttons = taglist_buttons
+        }
 
     -- Create a tasklist widget
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
@@ -497,13 +584,13 @@ globalkeys = gears.table.join(
 
     awful.key({ modkey,           }, "j",
         function ()
-            awful.client.focus.byidx(S_MAIN)
+            awful.client.focus.byidx(1)
         end,
         {description = "focus next by index", group = "client"}
     ),
     awful.key({ modkey,           }, "k",
         function ()
-            awful.client.focus.byidx(S_LEFT)
+            awful.client.focus.byidx(-1)
         end,
         {description = "focus previous by index", group = "client"}
     ),
@@ -780,20 +867,6 @@ awful.rules.rules = {
      }
     },
 
-    -- Note: this doesn't actually work because spotify doesn't set its name or class
-    --       until after it has spawned.
-    { rule = {
-            name = "Spotify Premium"
-      },
-      properties = {
-              floating = true,
-              titlebars_enabled = true,
-              width = 800,
-              height = 600,
-              placement = awful.placement.centered
-      }
-    },
-
     { rule_any = {
             name = {
                     "Krita - Edit Text",
@@ -845,9 +918,45 @@ awful.rules.rules = {
       }
     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
+    -- Specific client placement
+    --
+    { rule = { class = "Raven Reader" },
+      properties = { screen = S_MAIN, tag = "feed" } },
+    { rule = { class = "TelegramDesktop" },
+      properties = { screen = S_RIGHT_V, tag = "telegram" } },
+    { rule = { class = "Slack" },
+      properties = { screen = S_RIGHT_V, tag = "slack" } },
+    { rule = { class = "discord" },
+      properties = { screen = S_RIGHT_V, tag = "discord" } },
+    { rule = { class = "Transmission-remote-gtk" },
+      properties = { screen = S_RIGHT_V, tag = "torrent", switchtotag = true } },
+    { rule = { class = "irc" },
+      properties = { screen = S_RIGHT_V, tag = "irc" } },
+    { rule = { class = "KeePassXC" },
+      properties = { screen = S_RIGHT_V, tag = "misc", switchtotag = true } },
+    { rule = { class = "Pavucontrol" },
+      properties = { screen = S_RIGHT_V, tag = "misc", switchtotag = true } },
+    { rule = { class = "Spotify" },
+      properties = { maximized = true, screen = S_WALL, tag = "spotify" } },
+    { rule = { class = "krita" },
+      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
+    { rule = { class = "krita" },
+      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
+    { rule = { class = "Gimp" },
+      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
+    { rule = { class = "Gimp" },
+      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
+    { rule = { class = "Inkscape" },
+      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
+    { rule = { class = "Steam" },
+      properties = { screen = S_MAIN, tag = "steam" } },
+    { rule = { instance = "qutebrowser-main" }, -- qutebrowser main session window 1
+      properties = { screen = S_MAIN, tag = "www" } },
+    { rule = { instance = "qutebrowser-social" }, -- qutebrowser main session window 2
+      properties = { screen = S_LEFT, tag = "www" } },
+    { rule = { class = "qutebrowser" },
+      properties = { tag = "www" } },
+
 }
 -- }}}
 

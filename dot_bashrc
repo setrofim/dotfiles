@@ -19,6 +19,8 @@ alias git=hub
 alias ffprobe='/usr/bin/ffprobe -hide_banner'
 alias rg="rg -g '!tags'"
 alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
+alias qbmain="qutebrowser -R --nowindow --qt-arg name qutebrowser-main ':session-load mail' --basedir ~/.local/share/qutebrowser-main"
+alias qbsoc="qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':session-load social' --basedir ~/.local/share/qutebrowser-social"
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
@@ -108,8 +110,8 @@ export OPENAUDIBLE_HOME=$HOME/dopamine/audible/
 
 export JUPYTERLAB_DIR=$HOME/.local/share/jupyter/lab
 
-export QT_QPA_PLATFORMTHEME=gtk2
-export QT_STYLE_OVERRIDE=qt5ct-style
+export QT_QPA_PLATFORMTHEME=qt5ct
+export QT_STYLE_OVERRIDE=qt5ct
 
 export PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
 
