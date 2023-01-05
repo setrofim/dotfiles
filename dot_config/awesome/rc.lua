@@ -13,6 +13,7 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 local dpi = require("beautiful.xresources").apply_dpi
 local lain = require("lain")
 local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
+local appmenu = require("appmenu")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -102,10 +103,12 @@ myawesomemenu = {
    { "quit", function() awesome.quit() end}
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "open terminal", terminal }
-                                  }
-                        })
+mymainmenu = awful.menu({ items = {
+    { "open terminal", terminal, '/usr/share/icons/breeze-dark/apps/64/utilities-terminal.svg' },
+    { "applications", appmenu.Appmenu, '/usr/share/icons/breeze-dark/categories/32/applications-all.svg' },
+    { "awesome", myawesomemenu, beautiful.awesome_icon }
+  }
+})
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
@@ -422,8 +425,6 @@ awful.screen.connect_for_each_screen(function(s)
                     spotify_widget({
                         font = 'Liberation Sans 10',
                         max_length = 25,
-			play_icon='/usr/share/icons/Faience-Azur/actions/scalable/player_play.svg',
-			pause_icon='/usr/share/icons/Faience-Azur/actions/scalable/player_pause.svg',
                         dim_when_paused = true,
                         dim_opacity = 0.5
                     }),
@@ -958,3 +959,4 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 
 ---- }}}
 ----
+-- vim: set et sts=4 sw=4:
