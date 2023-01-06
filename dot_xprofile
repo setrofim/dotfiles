@@ -1,0 +1,18 @@
+PATH=$PATH:~/.local/bin:/opt/piavpn/bin
+
+setxkbmap gb -option ctrl:swapcaps
+xrandr --dpi 96x96
+/home/setrofim/.local/bin/map-tablet
+/opt/piavpn/bin/pia-client 2>/dev/null &
+nm-applet 2>/dev/null &
+dropbox start &
+pasystray 2>/dev/null &
+clipit 2>/dev/null &
+telegram-desktop 2>/dev/null &
+slack 2>/dev/null &
+discord 2>/dev/null &
+spotify 2>/dev/null &
+kitty --class irc -- ssh irc 2>/dev/null &
+raven-reader 2>/dev/null &
+qutebrowser -R --nowindow --qt-arg name qutebrowser-main ':session-load mail' --basedir ~/.local/share/qutebrowser-main 2>/dev/null &
+qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':session-load social' --basedir ~/.local/share/qutebrowser-social 2>/dev/null &
