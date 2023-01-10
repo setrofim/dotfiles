@@ -24,7 +24,7 @@ alias qbsoc="qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':sessio
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
-alias icat='kitty ican --align=left'
+alias icat='kitty icat --align=left'
 
 
 bind \\C-n:unix-filename-rubout
@@ -35,9 +35,9 @@ function weather {
     arg=$1
 
     if [ "$arg" == "-v2" ]; then
-        curl http://v2.wttr.in/Cambridge
+        curl http://v2.wttr.in/Cambridge?M
     else
-        curl wttr.in/Cambridge
+        curl wttr.in/Cambridge?M
     fi
 }
 
@@ -95,7 +95,7 @@ function _prompt_command {
 
 export PROMPT_COMMAND=_prompt_command
 
-export BROWSER=qutebrowser
+export BROWSER="qutebrowser --basedir ~/.local/share/qutebrowser-main"
 export EDITOR=nvim
 
 export PATH=$PATH:$HOME/go/bin
