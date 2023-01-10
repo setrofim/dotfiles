@@ -4,34 +4,34 @@ windows:
     AdnQywADAAAAAAACAAABggAAB30AAAYVAAAAAwAAAYMAAAd8AAAGFAAAAAMAAAAAB4AAAAADAAAB
     gwAAB3wAAAYU
   tabs:
-  - active: true
-    history:
+  - history:
     - active: true
-      last_visited: '2023-01-05T20:48:03'
-      pinned: false
+      last_visited: '2023-01-06T12:06:56'
+      pinned: true
       scroll-pos:
         x: 0
         y: 0
-      title: Local timeline - tryste.ro
-      url: https://tryste.ro/getting-started
+      title: cohost! - home
+      url: https://cohost.org/
       zoom: 1.0
   - history:
     - active: true
-      last_visited: '2023-01-05T20:49:34'
-      pinned: false
+      last_visited: '2023-01-06T12:06:58'
+      pinned: true
       scroll-pos:
         x: 0
         y: 0
       title: TweetDeck
       url: https://tweetdeck.twitter.com/
       zoom: 1.0
-  - history:
+  - active: true
+    history:
     - active: true
-      last_visited: '2023-01-05T20:48:59'
-      pinned: false
+      last_visited: '2023-01-06T12:06:55'
+      pinned: true
       scroll-pos:
         x: 0
         y: 0
-      title: cohost! - home
-      url: https://cohost.org/
+      title: 'f.rift :fire_blue:: "@holly_cummins I wonder if p…" - tryste.ro'
+      url: https://tryste.ro/@feonixrift@hackers.town/109641332790706500
       zoom: 1.0

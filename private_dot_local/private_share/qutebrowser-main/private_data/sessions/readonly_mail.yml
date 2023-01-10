@@ -7,8 +7,7 @@ windows:
   - active: true
     history:
     - active: true
-      last_visited: '2023-01-05T20:34:13'
-      original-url: https://outlook.office.com/owa/
+      last_visited: '2023-01-06T12:06:54'
       pinned: true
       scroll-pos:
         x: 0
@@ -18,7 +17,7 @@ windows:
       zoom: 1.0
   - history:
     - active: true
-      last_visited: '2023-01-05T20:35:25'
+      last_visited: '2023-01-06T12:06:54'
       pinned: true
       scroll-pos:
         x: 0
@@ -28,31 +27,31 @@ windows:
       zoom: 1.0
   - history:
     - active: true
-      last_visited: '2023-01-05T20:36:44'
+      last_visited: '2023-01-06T12:06:57'
       pinned: true
       scroll-pos:
         x: 0
         y: 0
-      title: Inbox - sergeitrofimov86@googlemail.com - Gmail
+      title: Inbox (1,928) - sergeitrofimov86@googlemail.com - Gmail
       url: https://mail.google.com/mail/u/0/#inbox
       zoom: 1.0
   - history:
     - active: true
-      last_visited: '2023-01-05T20:38:04'
+      last_visited: '2023-01-06T12:06:56'
       pinned: true
       scroll-pos:
         x: 0
         y: 0
-      title: Inbox - setrofim@gmail.com - Gmail
+      title: Inbox (8,266) - setrofim@gmail.com - Gmail
       url: https://mail.google.com/mail/u/1/#inbox
       zoom: 1.0
   - history:
     - active: true
-      last_visited: '2023-01-05T20:40:04'
+      last_visited: '2023-01-06T12:06:56'
       pinned: true
       scroll-pos:
         x: 0
         y: 0
-      title: Inbox - sergeitrofimov.amazon@googlemail.com - Gmail
+      title: Inbox (6,248) - sergeitrofimov.amazon@googlemail.com - Gmail
       url: https://mail.google.com/mail/u/2/#inbox
       zoom: 1.0
