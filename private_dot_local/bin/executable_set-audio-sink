@@ -1,0 +1,39 @@
+#!/bin/bash
+
+SINK_NAME="${1:-bthead}"
+
+SPEAKER="alsa_output.pci-0000_0d_00.4.analog-stereo"
+BT_HEADPHONES="bluez_sink.2C_FD_B3_5D_59_B0.a2dp_sink"
+BT_SPEAKER="bluez_sink.A4_77_58_11_F7_61.a2dp_sink"
+BT_EARBUDS="bluez_sink.B7_09_81_65_3A_AC.a2dp_sink"
+BATH_SPEAKER="bluez_sink.16_5F_94_0F_FE_65.a2dp_sink"
+
+BT_HEADPHONES_MAC="2C:FD:B3:5D:59:B0"
+BT_SPEAKER_MAC="A4:77:58:11:F7:61"
+BT_EARBUDS_MAC="B7:09:81:65:3A:AC"
+BATH_SPEAKER_MAC="16:5F:94:0F:FE:65"
+
+if [[ "$SINK_NAME" == "bthead"* ]]; then
+    SINK="$BT_HEADPHONES"
+    SINK_MAC="$BT_HEADPHONES_MAC"
+elif [[ "$SINK_NAME" == "speak"* ]]; then
+    SINK="$SPEAKER"
+elif [[ "$SINK_NAME" == "btsp"* ]]; then
+    SINK="$BT_SPEAKER"
+    SINK_MAC="$BT_SPEAKER_MAC"
+elif [[ "$SINK_NAME" == "btbud"* ]]; then
+    SINK="$BT_EARBUDS"
+    SINK_MAC="$BT_EARBUDS_MAC"
+elif [[ "$SINK_NAME" == "bath"* ]]; then
+    SINK="$BATH_SPEAKER"
+    SINK_MAC="$BATH_SPEAKER_MAC"
+else
+    echo "ERROR: unkown sink: $SINK_NAME"
+    exit 1
+fi
+
+if [[ "x$SINK_MAC" != "x" && "x$(bluetoothctl devices Connected | grep $SINK_MAC)" == "x" ]]; then
+    bluetoothctl connect $SINK_MAC
+    sleep 1
+fi
+pactl set-default-sink $SINK

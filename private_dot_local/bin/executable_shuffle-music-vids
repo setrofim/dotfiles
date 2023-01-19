@@ -1,0 +1,17 @@
+#!/bin/bash
+
+MUSIC_VID_DIR=${1:-"/home/setrofim/storage/Music Videos"}
+
+function get_abs_paths {
+    dirs=$1
+
+    IFS=
+    x=$(ls -1 "$dirs")
+    IFS=$'\n'
+    for f in $x; do
+        echo "$dirs/$f";
+    done
+}
+
+get_abs_paths "$MUSIC_VID_DIR" | shuf  > /tmp/playlist
+mpv --playlist=/tmp/playlist --volume=50
