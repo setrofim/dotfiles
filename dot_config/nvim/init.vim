@@ -129,7 +129,6 @@ Plug 'ctrlpvim/ctrlp.vim'  " File opener
 Plug 'tpope/vim-sensible'  " sensible defaults
 " Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-tidy --go-completer --clangd-completer --java-completer --system-libclang --clang-completer' }  " auto comletion
 Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'} " automatic flags generator for YCM
-Plug 'jonathanfilip/vim-lucius'  " colorscheme
 Plug 'scrooloose/nerdcommenter'  " comment code
 Plug 'jlanzarotta/bufexplorer'   " Better switching between buffers
 Plug 'majutsushi/tagbar'  " Sidebar listing tags (classes, functions, etc.) in the current file
@@ -165,7 +164,8 @@ Plug 'nblock/vim-dokuwiki' " doku wiki syntax
 Plug 'aklt/plantuml-syntax' " PlantUML syntax
 Plug 'vim-scripts/django.vim' " Syntax hightlight for django templates.
 Plug 'Glench/Vim-Jinja2-Syntax' " Syntax hightlight for jinja2 templates.
-Plug 'kdheepak/lazygit.nvim'
+Plug 'ellisonleao/gruvbox.nvim' " color scheme
+Plug 'kdheepak/lazygit.nvim' " git intergration
 
 call plug#end()
 
@@ -180,12 +180,15 @@ vmap <unique> <left>  <Plug>SchleppLeft
 vmap <unique> <right> <Plug>SchleppRight
 
 " Colorscheme
-colorscheme jellybeans
+set background=dark
+colorscheme gruvbox
+let g:gruvbox_improved_strings = 1
+let g:gruvbox_improved_warnings = 1
 
 " airline
 let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#whitespace#enabled = 0
-let g:airline_powerline_fonts = 0
+let g:airline#extensions#whitespace#enabled = 1
+let g:airline_powerline_fonts = 1
 
 
 " lazygit

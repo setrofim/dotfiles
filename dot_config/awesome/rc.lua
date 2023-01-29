@@ -343,7 +343,7 @@ screen_config = {
                     }
             },
             {
-                    "torrent",
+                    "zulip",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V
@@ -928,8 +928,8 @@ awful.rules.rules = {
       properties = { screen = S_RIGHT_V, tag = "slack" } },
     { rule = { class = "discord" },
       properties = { screen = S_RIGHT_V, tag = "discord" } },
-    { rule = { class = "Transmission-remote-gtk" },
-      properties = { screen = S_RIGHT_V, tag = "torrent", switchtotag = true } },
+    { rule = { class = "Zulip" },
+      properties = { screen = S_RIGHT_V, tag = "zulip" } },
     { rule = { class = "irc" },
       properties = { screen = S_RIGHT_V, tag = "irc" } },
     { rule = { class = "KeePassXC" },
@@ -955,6 +955,8 @@ awful.rules.rules = {
     { rule = { instance = "qutebrowser-social" }, -- qutebrowser main session window 2
       properties = { screen = S_LEFT, tag = "www" } },
     { rule = { class = "qutebrowser" },
+      properties = { tag = "www" } },
+    { rule = { class = "Vivaldi-stable" },
       properties = { tag = "www" } },
 
 }

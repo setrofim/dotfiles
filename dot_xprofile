@@ -11,6 +11,7 @@ clipit 2>/dev/null &
 telegram-desktop 2>/dev/null &
 slack 2>/dev/null &
 discord 2>/dev/null &
+zulip 2>/dev/null &
 spotify 2>/dev/null &
 kitty --class irc -- ssh irc 2>/dev/null &
 raven-reader 2>/dev/null &

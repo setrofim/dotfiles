@@ -3,6 +3,7 @@
 	name = setrofim
 [merge]
 	tool = meld
+	conflictstyle = diff3
 [color]
 	ui = auto
 [fetch]
