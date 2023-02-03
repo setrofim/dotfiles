@@ -7,7 +7,7 @@ renders correctly:
 adobe-source-code-pro-fonts
 noto-fonts-emoji
 ttf-liberation
-ttf-inconsolata
+ttf-inconsolata-nerd  # nerd-patched font
 
 ```
 

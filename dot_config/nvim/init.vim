@@ -113,6 +113,9 @@ map <leader>f :silent RangerEdit<CR>
 set wildmode=longest,list,full
 set wildmenu
 
+" Centerpad
+map <F9> :Centerpad 104<CR>
+
 
 " Quickfix
 nnoremap ]e :cn
@@ -127,11 +130,8 @@ Plug 'hari-rangarajan/CCTree' " cscope-based call tree navitation
 Plug 'Rykka/clickable.vim' " Makes links in files clickabke
 Plug 'ctrlpvim/ctrlp.vim'  " File opener
 Plug 'tpope/vim-sensible'  " sensible defaults
-" Plug 'Valloric/YouCompleteMe', { 'do': './install.sh --clang-tidy --go-completer --clangd-completer --java-completer --system-libclang --clang-completer' }  " auto comletion
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable'} " automatic flags generator for YCM
 Plug 'scrooloose/nerdcommenter'  " comment code
 Plug 'jlanzarotta/bufexplorer'   " Better switching between buffers
-Plug 'majutsushi/tagbar'  " Sidebar listing tags (classes, functions, etc.) in the current file
 Plug 'nielsadb/vim-filtering'  " Filter lines in a buffer and jump between filtered lines
 Plug 'clones/vim-l9'  " Needed for the fuzzy finder below
 Plug 'clones/vim-fuzzyfinder'  " Fuzzy search for buffers, lines, and files
@@ -149,7 +149,6 @@ Plug 'rbgrouleff/bclose.vim'  " Dependency for ranger
 Plug 'francoiscabrol/ranger.vim'  " Use ranger as directory browser
 Plug 'tpope/vim-fugitive'
 Plug 'rafaqz/ranger.vim'
-Plug 'johngrib/vim-game-code-break'
 Plug 'chrisbra/csv.vim'
 Plug 'zirrostig/vim-schlepp'  " Move text around
 Plug 'rust-lang/rust.vim'  " rust support
@@ -166,6 +165,13 @@ Plug 'vim-scripts/django.vim' " Syntax hightlight for django templates.
 Plug 'Glench/Vim-Jinja2-Syntax' " Syntax hightlight for jinja2 templates.
 Plug 'ellisonleao/gruvbox.nvim' " color scheme
 Plug 'kdheepak/lazygit.nvim' " git intergration
+Plug 'smithbm2316/centerpad.nvim' " center a single buffer
+
+Plug 'neovim/nvim-lspconfig' " Configure NeoVim Launguage Server Protocol client
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " tree-sitter AST integration
+Plug 'stevearc/aerial.nvim' " Code outliner (tagbar replacement)
+
+Plug 'nvim-tree/nvim-web-devicons' " devicons fonts (icon glyphs)
 
 call plug#end()
 
@@ -329,11 +335,6 @@ nnoremap <Leader>ev :BufExplorerVerticalSplit<CR>
 let g:bufExplorerShowRelativePath=1
 
 
-" Tagbar
-nnoremap <F8> :TagbarOpenAutoClose<CR>
-nnoremap <Leader>tt :TagbarToggle<CR>
-
-
 " CTRL-P
 let g:ctrlp_open_new_file = 'r'
 
@@ -354,12 +355,6 @@ nnoremap <F12> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 " Hightlight trailing whitespace
 highlight Trail ctermbg=black guibg=darkred
 call matchadd('Trail', '\s\+$', 100)
-
-
-" Project-specific
-au BufRead,BufNewFile /data/projects/attestation/code/attestation-prototype/* let g:pymode_breakpoint_cmd = "import rpdb; debugger = rpdb.Rpdb(addr='0.0.0.0', port=5858); debugger.set_trace()  # XXX BREAKPOINT"
-au BufRead,BufNewFile /data/projects/attestation/code/attestation-prototype/*yaml setlocal ts=2 sw=2 et
-
 
 
 " CoC
@@ -449,3 +444,17 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
+
+" Aerial Code Ouliner
+lua << EOF
+require('aerial').setup({
+  show_guides = true,
+  close_automatic_events = {'unfocus', 'switch_buffer', 'unsupported'},
+  on_attach = function(bufnr)
+    -- Jump forwards/backwards with '{' and '}'
+    vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
+    vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
+  end
+})
+EOF
+nnoremap <F8> :AerialToggle<CR>
