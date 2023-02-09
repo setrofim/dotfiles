@@ -94,6 +94,7 @@ function _prompt_command {
 }
 
 export PROMPT_COMMAND=_prompt_command
+export PROMPT_DIRTRIM=4
 
 export BROWSER="qutebrowser --basedir ~/.local/share/qutebrowser-main"
 export EDITOR=nvim
