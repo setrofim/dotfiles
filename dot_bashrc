@@ -28,7 +28,10 @@ alias isvg='rsvg-convert | icat'
 alias icat='kitty icat --align=left'
 
 
-bind \\C-n:unix-filename-rubout
+# ^Q (along with a few other chords) is intercepted by stty, preventing it from
+# reaching bash, unless XON/XOFF flow control is enabled, freeing ^Q and ^S.
+stty -ixon
+bind \\C-q:unix-filename-rubout
 
 COLORS=$(tput colors)
 

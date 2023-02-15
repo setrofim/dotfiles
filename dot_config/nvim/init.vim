@@ -287,7 +287,7 @@ function! Resyntax()
 endfunction
 
 com! Resyn :call Resyntax()
-nnoremap <leader>e :Resyn<CR>
+nnoremap <leader>t :Resyn<CR>
 
 " Reload files (in case have been chanted outside of editor, e.g. due to git
 function ReloadFiles()
