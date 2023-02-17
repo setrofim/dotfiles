@@ -30,7 +30,7 @@ alias icat='kitty icat --align=left'
 
 
 # ^Q (along with a few other chords) is intercepted by stty, preventing it from
-# reaching bash, unless XON/XOFF flow control is enabled, freeing ^Q and ^S.
+# reaching bash, unless XON/XOFF flow control is enabled.
 stty -ixon
 bind \\C-q:unix-filename-rubout
 
@@ -50,6 +50,39 @@ function parse_git_branch {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
 }
 
+HOSTNAME_CMD="hostnamectl hostname"
+
+function __hosthash() {
+    local _v=$((0x$($HOSTNAME_CMD | md5sum | cut -f1 -d" ") % 256))
+    echo ${_v#-}
+}
+
+# This maps a number in the range [0, 256) onto a range that would be easility
+# visible against a dark background termnial. Essentially, drop 0 (black), the
+# first (too dark) and last (too bright) eight values in each 36 value seciont,
+# the last 36 value section (which is greyscale).
+function __map_darkbg_visible() {
+    local i=$1
+    local offset=8
+
+    if [[ $i -lt 16 ]]; then
+        echo $((1 + ($i % 15 / 2)))
+    else
+        j=$(echo $(( ($i - 15) / 36 )))
+
+        # The last secition is the greys, and we want color!
+        if [[ $j -gt 5 ]]; then
+            j=$(echo $(( $j - 5 )))
+        fi
+
+        echo $(( $j*36 + 15 + $offset + ($i - 15) % (36 - $offset*2) ))
+    fi
+}
+
+function __hostcolor() {
+    printf "\x1b[38;5;%dm" $(__map_darkbg_visible $(__hosthash))
+}
+
 function _prompt_command {
     local exit_code=$?
     local exit_prompt=""
@@ -62,6 +95,9 @@ function _prompt_command {
         local green='\[\e[38;5;34m'
         local blue='\[\e[38;5;4m\]'
         local magen='\[\033[1;35m\]'
+        local white='\[\033[1;8m\]'
+
+        local host="$(__hostcolor)"
     elif [[ $COLORS -ge 8 ]]; then
         local purp='\e[1;34m'
         local red='\e[0;31m'
@@ -70,6 +106,9 @@ function _prompt_command {
         local green='\e[0;32m'
         local blue='\e[0;34m'
         local magen='\e[0;35m'
+        local white='\e[0;37m'
+
+        local host="$green"
     fi
 
     if [[ "$(id -u)" == "0" ]]; then
@@ -84,7 +123,7 @@ function _prompt_command {
 
     echo $prompt
     if [[ $COLORS -ge 8 ]]; then
-        PS1="${purp}┌─┤${yell}\D{%Y-%m-%dT%H:%M:%S}${purp}├─┤${who}\u@\h${purp}├─┤${blue}\w${purp}"
+        PS1="${purp}┌─┤${yell}\D{%Y-%m-%dT%H:%M:%S}${purp}├─┤${who}\u${reset}${purp}@${host}\h${purp}├─┤${blue}\w${purp}"
         if [[ $branch != "" ]]; then
             PS1+="├─┤${magen}$branch${purp}"
 
