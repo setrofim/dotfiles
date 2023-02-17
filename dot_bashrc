@@ -22,6 +22,7 @@ alias rot13="tr 'A-Za-z' 'N-ZA-Mn-za-m'"
 alias qbmain="qutebrowser -R --nowindow --qt-arg name qutebrowser-main ':session-load mail' --basedir ~/.local/share/qutebrowser-main"
 alias qbnew="qutebrowser -R --basedir ~/.local/share/qutebrowser-main"
 alias qbsoc="qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':session-load social' --basedir ~/.local/share/qutebrowser-social"
+alias jwt="step-cli crypto jwt"
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
