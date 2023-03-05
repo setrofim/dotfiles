@@ -1,12 +1,7 @@
--- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
--- Widget and layout library
 local wibox = require("wibox")
--- Theme handling library
 local beautiful = require("beautiful")
--- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
@@ -14,6 +9,8 @@ local dpi = require("beautiful.xresources").apply_dpi
 local lain = require("lain")
 local spotify_widget = require("awesome-wm-widgets.spotify-widget.spotify")
 local appmenu = require("appmenu")
+
+require("awful.autofocus")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -684,7 +681,7 @@ globalkeys = gears.table.join(
         end),
     awful.key({ }, "XF86AudioMute",
         function ()
-		 awful.util.spawn_with_shell("for s in $(pactl list sinks | grep -B1 RUNNING | cut -f2 -d# | egrep '[0-9]+'); do pactl set-sink-mute $s toggle; done")
+                 awful.util.spawn_with_shell("for s in $(pactl list sinks | grep -B1 RUNNING | cut -f2 -d# | egrep '[0-9]+'); do pactl set-sink-mute $s toggle; done")
         end),
     awful.key({ }, "XF86AudioStop",
         function ()
@@ -958,6 +955,8 @@ awful.rules.rules = {
       properties = { tag = "www" } },
     { rule = { class = "Vivaldi-stable" },
       properties = { tag = "www" } },
+    { rule = { class = "plexmediaplayer" },
+      properties = { screen = S_WALL, ag = "video" } },
 
 }
 -- }}}
