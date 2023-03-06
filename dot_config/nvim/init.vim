@@ -97,6 +97,7 @@ au BufRead,BufNewFile *.objdump set filetype=objdump number
 au BufRead,BufNewFile *.sqlite* set filetype=sqlite number
 au BufRead,BufNewFile *.doku set filetype=dokuwiki
 au BufRead,BufNewFile *.tmpl set filetype=jinja
+au BufRead,BufNewFile *.docker set filetype=dockerfile
 
 
 " Doku Wiki
