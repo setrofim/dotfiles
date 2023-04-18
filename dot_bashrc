@@ -199,4 +199,10 @@ if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integr
     source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"
 fi
 
+if [[ -d ~/.bashrc.d ]]; then
+    for f in $(ls ~/.bashrc.d); do
+        source ~/.bashrc.d/$f
+    done
+fi
+
 # vim: set ft=bash :
