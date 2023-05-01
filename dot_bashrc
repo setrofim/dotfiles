@@ -24,6 +24,7 @@ alias qbnew="qutebrowser -R --basedir ~/.local/share/qutebrowser-main"
 alias qbsoc="qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':session-load social' --basedir ~/.local/share/qutebrowser-social"
 alias step=step-cli
 alias jwt="step-cli crypto jwt"
+alias marp="marp --config ~/.config/marp.config.js"
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
