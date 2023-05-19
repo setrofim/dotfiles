@@ -1,0 +1,2 @@
+#!/bin/bash
+kitty --title=irc --class=irc sh -c "ssh irc"
