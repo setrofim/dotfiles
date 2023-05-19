@@ -304,7 +304,7 @@ screen_config = {
             },
             -- Right screen (vertical)
             {
-                    "telegram",
+                    "comm",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V,
@@ -312,21 +312,7 @@ screen_config = {
                     }
             },
             {
-                    "slack",
-                    {
-                            layout = awful.layout.suit.tile.bottom,
-                            screen = S_RIGHT_V
-                    }
-            },
-            {
-                    "discord",
-                    {
-                            layout = awful.layout.suit.tile.bottom,
-                            screen = S_RIGHT_V
-                    }
-            },
-            {
-                    "irc",
+                    "wk-comm",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V
@@ -340,7 +326,7 @@ screen_config = {
                     }
             },
             {
-                    "zulip",
+                    "notes",
                     {
                             layout = awful.layout.suit.tile.bottom,
                             screen = S_RIGHT_V
@@ -917,29 +903,27 @@ awful.rules.rules = {
 
     -- Specific client placement
     --
-    { rule = { class = "Raven Reader" },
-      properties = { screen = S_MAIN, tag = "feed" } },
     { rule = { class = "TelegramDesktop" },
-      properties = { screen = S_RIGHT_V, tag = "telegram" } },
-    { rule = { class = "Slack" },
-      properties = { screen = S_RIGHT_V, tag = "slack" } },
+      properties = { screen = S_RIGHT_V, tag = "comm", maximized = true } },
     { rule = { class = "discord" },
-      properties = { screen = S_RIGHT_V, tag = "discord" } },
+      properties = { screen = S_RIGHT_V, tag = "comm", maximized = true } },
+    { rule = { class = "Slack" },
+      properties = { screen = S_RIGHT_V, tag = "wk-comm", maximized = true } },
     { rule = { class = "Zulip" },
-      properties = { screen = S_RIGHT_V, tag = "zulip" } },
+      properties = { screen = S_RIGHT_V, tag = "wk-comm", maximized = true } },
     { rule = { class = "irc" },
-      properties = { screen = S_RIGHT_V, tag = "irc" } },
+      properties = { screen = S_RIGHT_V, tag = "comm", maximized = true } },
     { rule = { class = "KeePassXC" },
       properties = { screen = S_RIGHT_V, tag = "misc", switchtotag = true } },
     { rule = { class = "Pavucontrol" },
       properties = { screen = S_RIGHT_V, tag = "misc", switchtotag = true } },
+    { rule = { class = "Transmission-remote-gtk" },
+      properties = { screen = S_RIGHT_V, tag = "misc", switchtotag = true } },
+    { rule = { class = "obsidian" },
+      properties = { screen = S_RIGHT_V, tag = "notes", switchtotag = true } },
     { rule = { class = "Spotify" },
       properties = { maximized = true, screen = S_WALL, tag = "spotify" } },
     { rule = { class = "krita" },
-      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
-    { rule = { class = "krita" },
-      properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
-    { rule = { class = "Gimp" },
       properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
     { rule = { class = "Gimp" },
       properties = { screen = S_MAIN, tag = "art", switchtotag = true } },
