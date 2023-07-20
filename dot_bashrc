@@ -13,6 +13,7 @@ alias dict=sdcv
 alias vim=nvim
 alias cat=bat
 alias xclipb='xclip -selection clipboard'
+alias setxkb='setxkbmap gb -option ctrl:swapcaps'
 alias qtconsole='jupyter qtconsole --style stata-dark'
 alias spotify='alltray /usr/bin/spotify'
 alias git=hub
