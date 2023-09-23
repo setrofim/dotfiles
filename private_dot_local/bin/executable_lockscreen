@@ -1,0 +1,2 @@
+#!/bin/bash
+i3lock -F -i /usr/share/wallpapers/cyberpunk_city_03.jpg
