@@ -163,6 +163,8 @@ export QT_STYLE_OVERRIDE=qt5ct-style
 
 export PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
 
+export MAKEFLAGS=-j$(nproc)
+
 export MANWIDTH=100
 
 eval "$(dircolors ~/.config/dircolors)"
