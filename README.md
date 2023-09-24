@@ -12,3 +12,12 @@ ttf-inconsolata-nerd  # nerd-patched font
 ```
 
 Additionally, local founts are [also used](./dot_fonts). Run `fc-cache` after deployment.
+
+
+## GTK Themes
+
+The following Arch/AUR packages need to be installed for the themes in the GTK
+configs:
+
+faience-azur-icon-theme-lite
+gnome-themes-extra
