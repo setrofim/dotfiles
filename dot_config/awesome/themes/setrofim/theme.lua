@@ -1,8 +1,3 @@
--------------------------------
---  "setrofim" awesome theme  --
---    By Adrian C. (anrxc)   --
--------------------------------
-
 local themes_path = "/home/setrofim/.config/awesome/themes/"
 local dpi = require("beautiful.xresources").apply_dpi
 
@@ -12,12 +7,25 @@ theme.wallpaper = themes_path .. "setrofim/zenburn-background.png"
 -- }}}
 
 -- {{{ Styles
-theme.font      = "Liberation Sans 10"
+
+-- {{{ Font
+theme.font_size_small = 9
+theme.font_size_normal = 12
+
+theme.font_family      = "Liberation Sans"
+theme.font      = theme.font_family .. " " .. theme.font_size_normal
+theme.font_small      = theme.font_family .. " " .. theme.font_size_small
+
+theme.mono_font_family      = "Liberation Mono"
+theme.mono_font  = theme.mono_font_family .. " " .. theme.font_size_normal
+-- }}}
 
 -- {{{ Colors
 theme.fg_normal  = "#DDDDFF"
+theme.fg_muted   = "#9699A2"
 theme.fg_focus   = "#46A8C3"
 theme.fg_urgent  = "#CC9393"
+theme.fg_minor   = "#7AC82E"
 theme.bg_normal  = "#3F3F3F"
 theme.bg_focus   = "#1E2320"
 theme.bg_urgent  = "#3F3F3F"
@@ -36,6 +44,10 @@ theme.border_marked = "#CC9393"
 theme.titlebar_bg_focus  = "#4F4F5F"
 theme.titlebar_bg_normal = "#3F3F3F"
 -- }}}
+--
+-- {{{ Wibar
+theme.wibar_size = dpi(30)
+-- }}}
 
 -- There are other variable sets
 -- overriding the default one when
@@ -47,32 +59,10 @@ theme.titlebar_bg_normal = "#3F3F3F"
 --theme.taglist_bg_focus = "#CC9393"
 -- }}}
 
--- {{{ Widgets
--- You can add as many variables as
--- you wish and access them by using
--- beautiful.variable in your rc.lua
---theme.fg_widget        = "#AECF96"
---theme.fg_center_widget = "#88A175"
---theme.fg_end_widget    = "#FF5656"
---theme.bg_widget        = "#494B4F"
---theme.border_widget    = "#3F3F3F"
-theme.widget_ac                     = themes_path .. "setrofim/icons/ac.png"
-theme.widget_battery                = themes_path .. "setrofim/icons/battery.png"
-theme.widget_battery_low            = themes_path .. "setrofim/icons/battery_low.png"
-theme.widget_battery_empty          = themes_path .. "setrofim/icons/battery_empty.png"
-theme.widget_mem                    = themes_path .. "setrofim/icons/mem.png"
-theme.widget_cpu                    = themes_path .. "setrofim/icons/cpu.png"
-theme.widget_temp                   = themes_path .. "setrofim/icons/temp.png"
-theme.widget_net                    = themes_path .. "setrofim/icons/net_wired.png"
-theme.widget_hdd                    = themes_path .. "setrofim/icons/hdd.png"
-theme.widget_music                  = themes_path .. "setrofim/icons/note.png"
-theme.widget_music_on               = themes_path .. "setrofim/icons/note_on.png"
-theme.widget_vol                    = themes_path .. "setrofim/icons/vol.png"
-theme.widget_vol_low                = themes_path .. "setrofim/icons/vol_low.png"
-theme.widget_vol_no                 = themes_path .. "setrofim/icons/vol_no.png"
-theme.widget_vol_mute               = themes_path .. "setrofim/icons/vol_mute.png"
-theme.widget_mail                   = themes_path .. "setrofim/icons/mail.png"
-theme.widget_mail_on                = themes_path .. "setrofim/icons/mail_on.png"
+-- {{{ Icons
+theme.icon_awesome  = themes_path .. "setrofim/icons/awesome.png"
+theme.icon_play     = themes_path .. "setrofim/icons/player_play.png"
+theme.icon_pause    = themes_path .. "setrofim/icons/player_pause.png"
 -- }}}
 
 -- {{{ Mouse finder

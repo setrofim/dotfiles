@@ -20,10 +20,11 @@ local dpi = require('beautiful').xresources.apply_dpi
 -- Battery 0: Charging, 53%, 00:57:43 until charged
 
 local HOME = os.getenv("HOME")
+local WIDGET_DIR = HOME .. '/.config/awesome/awesome-wm-widgets/battery-widget'
 
 local battery_widget = {}
-local function worker(args)
-    local args = args or {}
+local function worker(user_args)
+    local args = user_args or {}
 
     local font = args.font or 'Play 8'
     local path_to_icons = args.path_to_icons or "/usr/share/icons/Arc/status/symbolic/"
@@ -32,13 +33,14 @@ local function worker(args)
     local margin_right = args.margin_right or 0
 
     local display_notification = args.display_notification or false
+    local display_notification_onClick = args.display_notification_onClick or true
     local position = args.notification_position or "top_right"
     local timeout = args.timeout or 10
 
     local warning_msg_title = args.warning_msg_title or 'Huston, we have a problem'
     local warning_msg_text = args.warning_msg_text or 'Battery is dying'
     local warning_msg_position = args.warning_msg_position or 'bottom_right'
-    local warning_msg_icon = args.warning_msg_icon or HOME .. '/.config/awesome/awesome-wm-widgets/batteryarc-widget/spaceman.jpg'
+    local warning_msg_icon = args.warning_msg_icon or WIDGET_DIR .. '/spaceman.jpg'
     local enable_battery_warning = args.enable_battery_warning
     if enable_battery_warning == nil then
         enable_battery_warning = true
@@ -58,7 +60,8 @@ local function worker(args)
             widget = wibox.widget.imagebox,
             resize = false
         },
-        layout = wibox.container.margin(_, 0, 0, 3)
+        valign = 'center',
+        layout = wibox.container.place,
     }
     local level_widget = wibox.widget {
         font = font,
@@ -118,33 +121,44 @@ local function worker(args)
     local batteryType = "battery-good-symbolic"
 
     watch("acpi -i", timeout,
-    function(widget, stdout, stderr, exitreason, exitcode)
+    function(widget, stdout)
         local battery_info = {}
         local capacities = {}
         for s in stdout:gmatch("[^\r\n]+") do
-            local status, charge_str, time = string.match(s, '.+: (%a+), (%d?%d?%d)%%,?(.*)')
+            -- Match a line with status and charge level
+            local status, charge_str, _ = string.match(s, '.+: ([%a%s]+), (%d?%d?%d)%%,?(.*)')
             if status ~= nil then
+                -- Enforce that for each entry in battery_info there is an
+                -- entry in capacities of zero. If a battery has status
+                -- "Unknown" then there is no capacity reported and we treat it
+                -- as zero capactiy for later calculations.
                 table.insert(battery_info, {status = status, charge = tonumber(charge_str)})
-            else
-                local cap_str = string.match(s, '.+:.+last full capacity (%d+)')
-                table.insert(capacities, tonumber(cap_str))
+                table.insert(capacities, 0)
+            end
+
+            -- Match a line where capacity is reported
+            local cap_str = string.match(s, '.+:.+last full capacity (%d+)')
+            if cap_str ~= nil then
+                capacities[#capacities] = tonumber(cap_str) or 0
             end
         end
 
         local capacity = 0
-        for i, cap in ipairs(capacities) do
-            capacity = capacity + cap
-        end
-
         local charge = 0
         local status
         for i, batt in ipairs(battery_info) do
-            if batt.charge >= charge then
-                status = batt.status -- use most charged battery status
-                -- this is arbitrary, and maybe another metric should be used
-            end
+            if capacities[i] ~= nil then
+                if batt.charge >= charge then
+                    status = batt.status -- use most charged battery status
+                    -- this is arbitrary, and maybe another metric should be used
+                end
 
-            charge = charge + batt.charge * capacities[i]
+                -- Adds up total (capacity-weighted) charge and total capacity.
+                -- It effectively ignores batteries with status "Unknown" as we
+                -- treat them with capacity zero.
+                charge = charge + batt.charge * capacities[i]
+                capacity = capacity + capacities[i]
+            end
         end
         charge = charge / capacity
 
@@ -152,7 +166,7 @@ local function worker(args)
             level_widget.text = string.format('%d%%', charge)
         end
 
-        if (charge >= 0 and charge < 15) then
+        if (charge >= 1 and charge < 15) then
             batteryType = "battery-empty%s-symbolic"
             if enable_battery_warning and status ~= 'Charging' and os.difftime(os.time(), last_battery_check) > 300 then
                 -- if 5 minutes have elapsed since the last warning
@@ -182,7 +196,13 @@ local function worker(args)
     if display_notification then
         battery_widget:connect_signal("mouse::enter", function() show_battery_status(batteryType) end)
         battery_widget:connect_signal("mouse::leave", function() naughty.destroy(notification) end)
+    elseif display_notification_onClick then
+        battery_widget:connect_signal("button::press", function(_,_,_,button)
+            if (button == 3) then show_battery_status(batteryType) end
+        end)
+        battery_widget:connect_signal("mouse::leave", function() naughty.destroy(notification) end)
     end
+
     return wibox.container.margin(battery_widget, margin_left, margin_right)
 end
 

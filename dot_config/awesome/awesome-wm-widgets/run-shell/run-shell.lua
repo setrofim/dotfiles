@@ -13,10 +13,13 @@ local wibox = require("wibox")
 local gears = require("gears")
 local completion = require("awful.completion")
 local naughty = require("naughty")
+local beautiful = require("beautiful")
 
 local HOME = os.getenv("HOME")
 
-local run_shell = awful.widget.prompt()
+local run_shell = awful.widget.prompt({
+    bg = "#00000000",
+})
 
 local widget = {}
 
@@ -30,21 +33,19 @@ function widget.new()
         local w = wibox {
             visible = false,
             ontop = true,
-            height = mouse.screen.geometry.height,
+            height = mouse.screen.geometry.height - beautiful.wibar_size,
             width = mouse.screen.geometry.width,
             opacity = 0.9,
-            bg = 'radial:'.. mouse.screen.geometry.width/2 .. ','
-                    .. mouse.screen.geometry.height/2 .. ',20:'
-                    .. mouse.screen.geometry.width/2 .. ','
-                    .. mouse.screen.geometry.height/2
-                    .. ',700:0,#2E344022:0.2,#4C566A88:1,#2E3440ff'
+            bg = '#2E3440ff',
         }
 
-        local suspend_button = wibox.widget {
+        local poweroff_button = wibox.widget {
             image  = '/usr/share/icons/Arc/actions/symbolic/system-shutdown-symbolic.svg',
             widget = wibox.widget.imagebox,
-            resize = false,
+            forced_width = 50,
+            forced_height = 50,
             opacity = 0.2,
+            --luacheck:ignore 432
             set_hover = function(self, opacity)
                 self.opacity = opacity
                 self.image = '/usr/share/icons/Arc/actions/symbolic/system-shutdown-symbolic.svg'
@@ -53,29 +54,29 @@ function widget.new()
 
         local turnoff_notification
 
-        suspend_button:connect_signal("mouse::enter", function()
+        poweroff_button:connect_signal("mouse::enter", function()
             turnoff_notification = naughty.notify{
-            icon = HOME .. "/.config/awesome/nichosi.png",
+            icon  = '/usr/share/icons/Arc/status/128/dialog-warning.png',
             icon_size=100,
-            title = "Huston, we have a problem",
+            title = "Attention!!!",
             text = "You're about to turn off your computer",
             timeout = 5, hover_timeout = 0.5,
             position = "bottom_right",
-            bg = "#F06060",
+            bg = "#F0101030",
             fg = "#EEE9EF",
             width = 300,
         }
-            suspend_button:set_hover(1)
+            poweroff_button:set_hover(1)
         end)
 
-        suspend_button:connect_signal("mouse::leave", function()
+        poweroff_button:connect_signal("mouse::leave", function()
             naughty.destroy(turnoff_notification)
-            suspend_button:set_hover(0.2)
+            poweroff_button:set_hover(0.2)
         end)
 
-        suspend_button:connect_signal("button::press", function(_,_,_,button)
+        poweroff_button:connect_signal("button::press", function(_,_,_,button)
             if (button == 1) then
-                awful.spawn("shutdown now")
+                awful.spawn("systemctl poweroff")
             end
         end)
 
@@ -85,8 +86,8 @@ function widget.new()
                     {
                         {
                             {
-                                markup = '<span font="awesomewm-font 14" color="#ffffff">a</span>',
-                                widget = wibox.widget.textbox,
+                                image  = '/usr/share/icons/breeze-dark/apps/64/utilities-terminal.svg',
+                                widget = wibox.widget.imagebox,
                             },
                             id = 'icon',
                             left = 10,
@@ -106,7 +107,7 @@ function widget.new()
                     end,
                     shape_border_color = '#74aeab',
                     shape_border_width = 1,
-                    forced_width = 200,
+                    forced_width = 300,
                     forced_height = 50,
                     widget = wibox.container.background
                 },
@@ -115,8 +116,12 @@ function widget.new()
             },
             {
                 {
-                    suspend_button,
-                    layout = wibox.layout.fixed.horizontal
+                    {
+                        poweroff_button,
+                        layout = wibox.layout.fixed.horizontal,
+                    },
+                    bottom = beautiful.wibar_size,
+                    layout = wibox.container.margin,
                 },
                 valign = 'bottom',
                 layout = wibox.container.place,
@@ -137,9 +142,9 @@ function widget.new()
         end
         local w = self._cached_wiboxes[s][1]
         w.visible = true
-        awful.placement.top(w, { margins = { top = 20 }, parent = awful.screen.focused() })
+        awful.placement.top(w, { margins = { top = beautiful.wibar_size }, parent = awful.screen.focused() })
         awful.prompt.run {
-            prompt = 'Run: ',
+            prompt = '',
             bg_cursor = '#74aeab',
             textbox = run_shell.widget,
             completion_callback = completion.shell,

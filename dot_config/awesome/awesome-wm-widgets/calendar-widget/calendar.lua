@@ -16,7 +16,7 @@ local naughty = require("naughty")
 
 local calendar_widget = {}
 
-local function worker(args)
+local function worker(user_args)
 
     local calendar_themes = {
         nord = {
@@ -68,22 +68,36 @@ local function worker(args)
             weekday_fg = '#FD971F',
             header_fg = '#F92672',
             border = '#75715E'
+        },
+        naughty = {
+            bg = beautiful.notification_bg or beautiful.bg,
+            fg = beautiful.notification_fg or beautiful.fg,
+            focus_date_bg = beautiful.notification_fg or beautiful.fg,
+            focus_date_fg = beautiful.notification_bg or beautiful.bg,
+            weekend_day_bg = beautiful.bg_focus,
+            weekday_fg = beautiful.fg,
+            header_fg = beautiful.fg,
+            border = beautiful.border_normal
         }
+
     }
 
-    local args = args or {}
+    local args = user_args or {}
 
     if args.theme ~= nil and calendar_themes[args.theme] == nil then
         naughty.notify({
             preset = naughty.config.presets.critical,
             title = 'Calendar Widget',
             text = 'Theme "' .. args.theme .. '" not found, fallback to default'})
-        args.theme = 'nord'
+        args.theme = 'naughty'
     end
 
-    local theme = args.theme or 'nord'
+    local theme = args.theme or 'naughty'
     local placement = args.placement or 'top'
-
+    local radius = args.radius or 8
+    local next_month_button = args.next_month_button or 4
+    local previous_month_button = args.previous_month_button or 5
+    local start_sunday = args.start_sunday or false
 
     local styles = {}
     local function rounded_shape(size)
@@ -130,7 +144,7 @@ local function worker(args)
         -- highlight only today's day
         if flag == 'focus' then
             local today = os.date('*t')
-            if today.month ~= date.month then
+            if not (today.month == date.month and today.year == date.year) then
                 flag = 'normal'
             end
         end
@@ -142,7 +156,9 @@ local function worker(args)
         -- Change bg color for weekends
         local d = { year = date.year, month = (date.month or 1), day = (date.day or 1) }
         local weekday = tonumber(os.date('%w', os.time(d)))
-        local default_bg = (weekday == 0 or weekday == 6) and calendar_themes[theme].weekend_day_bg or calendar_themes[theme].bg
+        local default_bg = (weekday == 0 or weekday == 6)
+            and calendar_themes[theme].weekend_day_bg
+            or calendar_themes[theme].bg
         local ret = wibox.widget {
             {
                 {
@@ -169,13 +185,14 @@ local function worker(args)
         font = beautiful.get_font(),
         fn_embed = decorate_cell,
         long_weekdays = true,
+        start_sunday = start_sunday,
         widget = wibox.widget.calendar.month
     }
 
     local popup = awful.popup {
         ontop = true,
         visible = false,
-        shape = gears.shape.rounded_rect,
+        shape = rounded_shape(radius),
         offset = { y = 5 },
         border_width = 1,
         border_color = calendar_themes[theme].border,
@@ -184,14 +201,14 @@ local function worker(args)
 
     popup:buttons(
             awful.util.table.join(
-                    awful.button({}, 4, function()
+                    awful.button({}, next_month_button, function()
                         local a = cal:get_date()
                         a.month = a.month + 1
                         cal:set_date(nil)
                         cal:set_date(a)
                         popup:set_widget(cal)
                     end),
-                    awful.button({}, 5, function()
+                    awful.button({}, previous_month_button, function()
                         local a = cal:get_date()
                         a.month = a.month - 1
                         cal:set_date(nil)
@@ -215,8 +232,14 @@ local function worker(args)
                 awful.placement.top(popup, { margins = { top = 30 }, parent = awful.screen.focused() })
             elseif placement == 'top_right' then
                 awful.placement.top_right(popup, { margins = { top = 30, right = 10}, parent = awful.screen.focused() })
+            elseif placement == 'top_left' then
+                awful.placement.top_left(popup, { margins = { top = 30, left = 10}, parent = awful.screen.focused() })
             elseif placement == 'bottom_right' then
-                awful.placement.bottom_right(popup, { margins = { bottom = 30, right = 10}, parent = awful.screen.focused() })
+                awful.placement.bottom_right(popup, { margins = { bottom = 30, right = 10},
+                    parent = awful.screen.focused() })
+            elseif placement == 'bottom_left' then
+                awful.placement.bottom_left(popup, { margins = { bottom = 30, left = 10},
+                    parent = awful.screen.focused() })
             else
                 awful.placement.top(popup, { margins = { top = 30 }, parent = awful.screen.focused() })
             end

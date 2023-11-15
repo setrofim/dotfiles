@@ -17,17 +17,31 @@ local HOME_DIR = os.getenv("HOME")
 local WIDGET_DIR = HOME_DIR .. '/.config/awesome/awesome-wm-widgets/weather-widget'
 local GET_FORECAST_CMD = [[bash -c "curl -s --show-error -X GET '%s'"]]
 
+local SYS_LANG = os.getenv("LANG"):sub(1, 2)
+if SYS_LANG == "C" or SYS_LANG == "C." then
+    -- C-locale is a common fallback for simple English
+    SYS_LANG = "en"
+end
+-- default language is ENglish
+local LANG = gears.filesystem.file_readable(WIDGET_DIR .. "/" .. "locale/" ..
+                                      SYS_LANG .. ".lua") and SYS_LANG or "en"
+local LCLE = require("awesome-wm-widgets.weather-widget.locale." .. LANG)
+
+
 local function show_warning(message)
     naughty.notify {
         preset = naughty.config.presets.critical,
-        title = 'Weather Widget',
+        title = LCLE.warning_title,
         text = message
     }
 end
 
+if SYS_LANG ~= LANG then
+    show_warning("Your language is not supported yet. Language set to English")
+end
+
 local weather_widget = {}
 local warning_shown = false
-local notification
 local tooltip = awful.tooltip {
     mode = 'outside',
     preferred_positions = {'bottom'}
@@ -41,6 +55,7 @@ local weather_popup = awful.popup {
     border_color = beautiful.bg_focus,
     maximum_width = 400,
     offset = {y = 5},
+    hide_on_right_click = true,
     widget = {}
 }
 
@@ -70,10 +85,7 @@ local icon_map = {
 local function to_direction(degrees)
     -- Ref: https://www.campbellsci.eu/blog/convert-wind-directions
     if degrees == nil then return "Unknown dir" end
-    local directions = {
-        "N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW",
-        "WSW", "W", "WNW", "NW", "NNW", "N"
-    }
+    local directions = LCLE.directions
     return directions[math.floor((degrees % 360) / 22.5) + 1]
 end
 
@@ -115,15 +127,15 @@ local function uvi_index_color(uvi)
     return '<span weight="bold" foreground="' .. color .. '">' .. uvi .. '</span>'
 end
 
-local function worker(args)
+local function worker(user_args)
 
-    local args = args or {}
+    local args = user_args or {}
 
     --- Validate required parameters
     if args.coordinates == nil or args.api_key == nil then
-        show_warning('Required parameters are not set: ' ..
-                         (args.coordinates == nil and '<b>coordinates</b>' or '') ..
-                         (args.api_key == nil and ', <b>api_key</b> ' or ''))
+        show_warning(LCLE.parameter_warning ..
+                     (args.coordinates == nil and '<b>coordinates</b>' or '') ..
+                     (args.api_key == nil and ', <b>api_key</b> ' or ''))
         return
     end
 
@@ -139,28 +151,41 @@ local function worker(args)
     local icons_extension = args.icons_extension or '.png'
     local timeout = args.timeout or 120
 
+    local ICONS_DIR = WIDGET_DIR .. '/icons/' .. icon_pack_name .. '/'
     local owm_one_cal_api =
-        ('https://api.openweathermap.org/data/2.5/onecall' .. 
+        ('https://api.openweathermap.org/data/2.5/onecall' ..
             '?lat=' .. coordinates[1] .. '&lon=' .. coordinates[2] .. '&appid=' .. api_key ..
             '&units=' .. units .. '&exclude=minutely' ..
             (show_hourly_forecast == false and ',hourly' or '') ..
-            (show_daily_forecast == false and ',daily' or ''))
+            (show_daily_forecast == false and ',daily' or '') ..
+            '&lang=' .. LANG)
 
     weather_widget = wibox.widget {
         {
             {
-                id = 'icon',
-                resize = true,
-                widget = wibox.widget.imagebox
+                {
+                    {
+                        id = 'icon',
+                        resize = true,
+                        widget = wibox.widget.imagebox
+                    },
+                    valign = 'center',
+                    widget = wibox.container.place,
+                },
+                {
+                    id = 'txt',
+                    widget = wibox.widget.textbox
+                },
+                layout = wibox.layout.fixed.horizontal,
             },
-            valign = 'center',
-            widget = wibox.container.place,
+            left = 4,
+            right = 4,
+            layout = wibox.container.margin
         },
-        {
-            id = 'txt',
-            widget = wibox.widget.textbox
-        },
-        layout = wibox.layout.fixed.horizontal,
+        shape = function(cr, width, height)
+            gears.shape.rounded_rect(cr, width, height, 4)
+        end,
+        widget = wibox.container.background,
         set_image = function(self, path)
             self:get_children_by_id('icon')[1].image = path
         end,
@@ -241,13 +266,16 @@ local function worker(args)
         forced_width = 300,
         layout = wibox.layout.flex.horizontal,
         update = function(self, weather)
-            self:get_children_by_id('icon')[1]:set_image(WIDGET_DIR .. '/icons/' .. icon_pack_name .. '/' .. icon_map[weather.weather[1].icon] .. icons_extension)
+            self:get_children_by_id('icon')[1]:set_image(
+                ICONS_DIR .. icon_map[weather.weather[1].icon] .. icons_extension)
             self:get_children_by_id('temp')[1]:set_text(gen_temperature_str(weather.temp, '%.0f', false, units))
-            self:get_children_by_id('feels_like_temp')[1]:set_text('Feels like ' .. gen_temperature_str(weather.feels_like, '%.0f', false, units))
+            self:get_children_by_id('feels_like_temp')[1]:set_text(
+                LCLE.feels_like .. gen_temperature_str(weather.feels_like, '%.0f', false, units))
             self:get_children_by_id('description')[1]:set_text(weather.weather[1].description)
-            self:get_children_by_id('wind')[1]:set_markup('Wind: <b>' .. weather.wind_speed .. 'm/s (' .. to_direction(weather.wind_deg) .. ')</b>')
-            self:get_children_by_id('humidity')[1]:set_markup('Humidity: <b>' .. weather.humidity .. '%</b>')
-            self:get_children_by_id('uv')[1]:set_markup('UV: ' .. uvi_index_color(weather.uvi))
+            self:get_children_by_id('wind')[1]:set_markup(
+                LCLE.wind .. '<b>' .. weather.wind_speed .. 'm/s (' .. to_direction(weather.wind_deg) .. ')</b>')
+            self:get_children_by_id('humidity')[1]:set_markup(LCLE.humidity .. '<b>' .. weather.humidity .. '%</b>')
+            self:get_children_by_id('uv')[1]:set_markup(LCLE.uv .. uvi_index_color(weather.uvi))
         end
     }
 
@@ -270,7 +298,7 @@ local function worker(args)
                     {
                         {
                             {
-                                image = WIDGET_DIR .. '/icons/' .. icon_pack_name .. '/' .. icon_map[day.weather[1].icon] .. icons_extension,
+                                image = ICONS_DIR .. icon_map[day.weather[1].icon] .. icons_extension,
                                 resize = true,
                                 forced_width = 48,
                                 forced_height = 48,
@@ -325,12 +353,27 @@ local function worker(args)
             self.min_value = new_min_value
         end
     }
+    local hourly_forecast_negative_graph = wibox.widget {
+        step_width = 12,
+        color = '#5E81AC',
+        background_color = beautiful.bg_normal,
+        forced_height = 100,
+        forced_width = 300,
+        widget = wibox.widget.graph,
+        set_max_value = function(self, new_max_value)
+            self.max_value = new_max_value
+        end,
+        set_min_value = function(self, new_min_value)
+            self.min_value = new_min_value
+        end
+    }
 
     local hourly_forecast_widget = {
         layout = wibox.layout.fixed.vertical,
         update = function(self, hourly)
             local hours_below = {
                 id = 'hours',
+                forced_width = 300,
                 layout = wibox.layout.flex.horizontal
             }
             local temp_below = {
@@ -355,49 +398,111 @@ local function worker(args)
                         widget = wibox.widget.textbox
                     })
                     table.insert(temp_below, wibox.widget {
-                        markup = '<span foreground="#2E3440">' .. string.format('%.0f', hour.temp) .. '°' .. '</span>',
+                        markup = '<span foreground="'
+                                .. (tonumber(hour.temp) > 0 and '#2E3440' or '#ECEFF4') .. '">'
+                                .. string.format('%.0f', hour.temp) .. '°' .. '</span>',
                         align = 'center',
                         font = font_name .. ' 9',
                         widget = wibox.widget.textbox
                     })
                 end
             end
-            hourly_forecast_graph:set_max_value(max_temp)
-            hourly_forecast_graph:set_min_value(min_temp * 0.7) -- move graph a bit up
-            for i, value in ipairs(values) do
-                hourly_forecast_graph:add_value(value)
+
+            hourly_forecast_graph:set_max_value(math.max(max_temp, math.abs(min_temp)))
+            hourly_forecast_graph:set_min_value(min_temp > 0 and min_temp * 0.7 or 0) -- move graph a bit up
+
+            hourly_forecast_negative_graph:set_max_value(math.abs(min_temp))
+            hourly_forecast_negative_graph:set_min_value(max_temp < 0 and math.abs(max_temp) * 0.7 or 0)
+
+            for _, value in ipairs(values) do
+                if value >= 0 then
+                    hourly_forecast_graph:add_value(value)
+                    hourly_forecast_negative_graph:add_value(0)
+                else
+                    hourly_forecast_graph:add_value(0)
+                    hourly_forecast_negative_graph:add_value(math.abs(value))
+                end
             end
 
             local count = #self
             for i = 0, count do self[i]=nil end
 
-            table.insert(self, wibox.widget{
-                {
-                    hourly_forecast_graph,
-                    reflection = {horizontal = true},
-                    widget = wibox.container.mirror
-                },
-                {
-                    temp_below,
-                    valign = 'bottom',
-                    widget = wibox.container.place
-                },
-                id = 'graph',
-                layout = wibox.layout.stack
-            })
-            table.insert(self, hours_below)
+            -- all temperatures are positive
+            if min_temp > 0 then
+                table.insert(self, wibox.widget{
+                    {
+                        hourly_forecast_graph,
+                        reflection = {horizontal = true},
+                        widget = wibox.container.mirror
+                    },
+                    {
+                        temp_below,
+                        valign = 'bottom',
+                        widget = wibox.container.place
+                    },
+                    id = 'graph',
+                    layout = wibox.layout.stack
+                })
+                table.insert(self, hours_below)
+
+            -- all temperatures are negative
+            elseif max_temp < 0 then
+                table.insert(self, hours_below)
+                table.insert(self, wibox.widget{
+                    {
+                        hourly_forecast_negative_graph,
+                        reflection = {horizontal = true, vertical = true},
+                        widget = wibox.container.mirror
+                    },
+                    {
+                        temp_below,
+                        valign = 'top',
+                        widget = wibox.container.place
+                    },
+                    id = 'graph',
+                    layout = wibox.layout.stack
+                })
+
+            -- there are both negative and positive temperatures
+            else
+                table.insert(self, wibox.widget{
+                    {
+                        hourly_forecast_graph,
+                        reflection = {horizontal = true},
+                        widget = wibox.container.mirror
+                    },
+                    {
+                        temp_below,
+                        valign = 'bottom',
+                        widget = wibox.container.place
+                    },
+                    id = 'graph',
+                    layout = wibox.layout.stack
+                })
+                table.insert(self, wibox.widget{
+                    {
+                        hourly_forecast_negative_graph,
+                        reflection = {horizontal = true, vertical = true},
+                        widget = wibox.container.mirror
+                    },
+                    {
+                        hours_below,
+                        valign = 'top',
+                        widget = wibox.container.place
+                    },
+                    id = 'graph',
+                    layout = wibox.layout.stack
+                })
+            end
         end
     }
 
     local function update_widget(widget, stdout, stderr)
         if stderr ~= '' then
             if not warning_shown then
-                if (
-                    stderr ~= 'curl: (52) Empty reply from server' and
-                    stderr ~= 'curl: (28) Failed to connect to api.openweathermap.org port 443: Connection timed out' and
-                    stderr:find(
-                        '^curl: %(18%) transfer closed with %d+ bytes remaining to read$'
-                    ) ~= nil
+                if (stderr ~= 'curl: (52) Empty reply from server'
+                and stderr ~= 'curl: (28) Failed to connect to api.openweathermap.org port 443: Connection timed out'
+                and stderr:find('^curl: %(18%) transfer closed with %d+ bytes remaining to read$') ~= nil
                 ) then
                     show_warning(stderr)
                 end
@@ -416,7 +521,7 @@ local function worker(args)
 
         local result = json.decode(stdout)
 
-        widget:set_image(WIDGET_DIR .. '/icons/' .. icon_pack_name .. '/' .. icon_map[result.current.weather[1].icon] .. icons_extension)
+        widget:set_image(ICONS_DIR .. icon_map[result.current.weather[1].icon] .. icons_extension)
         widget:set_text(gen_temperature_str(result.current.temp, '%.0f', both_units_widget, units))
 
         current_weather_widget:update(result.current)
@@ -448,10 +553,12 @@ local function worker(args)
         })
     end
 
-    weather_widget:buttons(awful.util.table.join(awful.button({}, 1, function()
+    weather_widget:buttons(gears.table.join(awful.button({}, 1, function()
             if weather_popup.visible then
+                weather_widget:set_bg('#00000000')
                 weather_popup.visible = not weather_popup.visible
             else
+                weather_widget:set_bg(beautiful.bg_focus)
                 weather_popup:move_next_to(mouse.current_widget_geometry)
             end
         end)))

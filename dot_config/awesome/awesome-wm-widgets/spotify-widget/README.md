@@ -29,11 +29,12 @@ It is possible to customize widget by providing a table with all or some of the 
 | `play_icon` | `/usr/share/icons/Arc/actions/24/player_play.png` | Play icon |
 | `pause_icon` | `/usr/share/icons/Arc/actions/24/player_pause.png` | Pause icon |
 | `font` | `Play 9`| Font |
-| `dim_when_paused` | `false` | Decrease the widget opacity if spotify is paused |
-| `dim_opacity` | `0.2` | Widget's opacity when dimmed, `dim_when_paused` should be set to `true` |
-| `max_length` | `15` | Maximum lentgh of artist and title names. Text will be ellipsized if longer. |
-| `show_tooltip` | `true`| Show tooltip on hover with information about the playing song |
+| `dim_when_paused` | false | Decrease the widget opacity if spotify is paused |
+| `dim_opacity` | 0.2 | Widget's opacity when dimmed, `dim_when_paused` should be set to true |
+| `max_length` | 15 | Maximum lentgh of artist and title names. Text will be ellipsized if longer. |
+| `show_tooltip` | true | Show tooltip on hover with information about the playing song |
 | `timeout` | 1 | How often in seconds the widget refreshes |
+| `sp_bin` | `sp` | Path to the `sp` binary. Required if `sp` is not in environment PATH. |
 
 
 ### Example:
@@ -41,12 +42,13 @@ It is possible to customize widget by providing a table with all or some of the 
 ```lua
 spotify_widget({
     font = 'Ubuntu Mono 9',
-    play_icon = '/usr/share/icons/Faience-Azur/24x24/categories/spotify.svg',
-    pause_icon = '/usr/share/icons/Faience-Azur/24x24/panel/spotify-indicator.svg',
+    play_icon = '/usr/share/icons/Papirus-Light/24x24/categories/spotify.svg',
+    pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg',
     dim_when_paused = true,
     dim_opacity = 0.5,
     max_length = -1,
-    show_tooltip = false
+    show_tooltip = false,
+    sp_bin = gears.filesystem.get_configuration_dir() .. 'scripts/sp'
 })
 ```
 
@@ -62,11 +64,14 @@ Paused:
 
 First you need to have spotify CLI installed, it uses dbus to communicate with spotify-client:
 
-```bash
+```bash 
 git clone https://gist.github.com/fa6258f3ff7b17747ee3.git
-cd ./fa6258f3ff7b17747ee3
+cd ./fa6258f3ff7b17747ee3 
 chmod +x sp
+# This widget will work by default if the binary is in the system PATH
 sudo cp ./sp /usr/local/bin/
+# Alternatively, you may save the binary anywhere and supply the path via this widget's sp_bin argument:
+# cp ./sp ~/.config/awesome/scripts/
 ```
 
 Then clone repo under **~/.config/awesome/** and add widget in **rc.lua**:
@@ -78,14 +83,13 @@ s.mytasklist, -- Middle widget
 	{ -- Right widgets
     	layout = wibox.layout.fixed.horizontal,
 		...
-        -- default
+        -- default        
         spotify_widget(),
         -- customized
         spotify_widget({
-           font = 'Liberation Mono 6',
-           play_icon = '/usr/share/icons/Faience-Azur/apps/scalable/spotify.svg',
-           pause_icon = '/usr/share/icons/Faience-Azur/apps/scalable/spotify.svg',
-
+           font = 'Ubuntu Mono 9',
+           play_icon = '/usr/share/icons/Papirus-Light/24x24/categories/spotify.svg',
+           pause_icon = '/usr/share/icons/Papirus-Dark/24x24/panel/spotify-indicator.svg'
         }),
-		...
+		...      
 ```
