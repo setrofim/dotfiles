@@ -10,7 +10,7 @@ theme.wallpaper = themes_path .. "setrofim/zenburn-background.png"
 
 -- {{{ Font
 theme.font_size_small = 9
-theme.font_size_normal = 12
+theme.font_size_normal = 11
 
 theme.font_family      = "Liberation Sans"
 theme.font      = theme.font_family .. " " .. theme.font_size_normal
@@ -46,7 +46,7 @@ theme.titlebar_bg_normal = "#3F3F3F"
 -- }}}
 --
 -- {{{ Wibar
-theme.wibar_size = dpi(30)
+theme.wibar_size = dpi(25)
 -- }}}
 
 -- There are other variable sets

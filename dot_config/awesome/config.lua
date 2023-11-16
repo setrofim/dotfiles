@@ -1,4 +1,5 @@
 local awful = require("awful")
+local gears = require("gears")
 ------------------------------------------------------------------------------
 --
 -- enviroment-specific configuration
@@ -8,8 +9,26 @@ local awful = require("awful")
 --
 ------------------------------------------------------------------------------
 
--- directory containing wallpapers reference inside screen configs.
+-- {{{ misc config
+
+-- Directory containing wallpapers reference inside screen configs.
 local wallpaper_base = '/usr/share/wallpapers/'
+
+-- Audio output name to be used the volume widget. Can use
+--
+--      pactl list sinks | grep Name
+--
+-- to get a list. Leave as nil to use the pactl default.
+local audio_output = nil
+
+-- File system mounts to show in the fs widget. This is a list of mount groups.
+-- Each mount groups is a list of mounts to be shown in a single widget (i.e.
+-- available/used space will be tracked for the mount group as a whole).
+local fs_mounts = {
+    { '/' },
+}
+
+-- }}}
 
 -- {{{ applications
 -- terminal application
@@ -30,16 +49,17 @@ local file_manager = "thunar"
 --  Configuration tables for individual screens. There should be one for each
 --  pysical display present in a setup. These then get mapped onto the
 --  "standard" layout using the "screens" table below.
-local laptop_panel = {
+--  note: do not explicitly specify screen in the tag configs below -- that
+--  will be done automatically.
+local main_screen = {
     index = 1,
     wallpaper  = 'cyberpunk_city_21.jpg',
     tags = {
-            -- Main screen
             {
                     "term",
                     {
                             layout = awful.layout.suit.tile,
-                            selected = true
+                            selected = true,
                     }
             },
             {
@@ -49,7 +69,7 @@ local laptop_panel = {
                     }
             },
             {
-                    "comms",
+                    "files",
                     {
                             layout = awful.layout.suit.tile,
                     }
@@ -60,10 +80,62 @@ local laptop_panel = {
                             layout = awful.layout.suit.tile,
                     }
             },
+        },
+}
+
+local left_screen = {
+    index = 2,
+    wallpaper  = 'cyberpunk_city_09.jpg',
+    tags = {
             {
-                    "music",
+                    "www",
                     {
-                            layout = awful.layout.suit.tile,
+                            layout = awful.layout.suit.tile.left,
+                            selected = true,
+                    }
+            },
+        },
+}
+
+local right_screen_veritical = {
+    index = 3,
+    wallpaper  = 'cyberpunk_city_12_vertical.jpg',
+    tags = {
+            {
+                    "telegram",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                            selected = true,
+                    }
+            },
+            {
+                    "slack",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                    }
+            },
+            {
+                    "zulip",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                    }
+            },
+            {
+                    "www",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                    }
+            },
+            {
+                    "misc",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
+                    }
+            },
+            {
+                    "spotify",
+                    {
+                            layout = awful.layout.suit.tile.bottom,
                     }
             },
         },
@@ -113,32 +185,54 @@ local laptop_panel = {
 --   to the same config.
 --
 local screens = {
-    main  = laptop_panel,
-    left  = laptop_panel,
-    right = laptop_panel,
-    aux   = laptop_panel,
+    main  = main_screen,
+    left  = left_screen,
+    right = right_screen_veritical,
+    aux   = main_screen,
 }
 -- }}}
 
 -- {{{ rules
 -- client placement rules that depend on the screen and tag configurations
 local rules = {
+    { rule = { class = "Raven Reader" },
+      properties = { screen = screens.main.index, tag = "feed" } },
     { rule = { class = "TelegramDesktop" },
-      properties = { tag = "comms", switchtotag = true } },
+      properties = { screen = screens.right.index, tag = "telegram" } },
     { rule = { class = "Slack" },
-      properties = { tag = "comms", switchtotag = true } },
-    { rule = { class = "discord" },
-      properties = { tag = "comms", switchtotag = true } },
+      properties = { screen = screens.right.index, tag = "slack" } },
+    { rule = { class = "Zulip" },
+      properties = { screen = screens.right.index, tag = "zulip" } },
+    { rule = { class = "irc" },
+      properties = { screen = screens.right.index, tag = "irc" } },
     { rule = { class = "KeePassXC" },
-      properties = { tag = "misc", switchtotag = true } },
+      properties = { screen = screens.right.index, tag = "misc", switchtotag = true } },
     { rule = { class = "Pavucontrol" },
-      properties = { tag = "misc", switchtotag = true } },
+      properties = { screen = screens.main.index, tag = "misc", switchtotag = true } },
+    { rule = { class = "Spotify" },
+      properties = { maximized = true, screen = screens.right.index, tag = "spotify" } },
+    { rule = { class = "krita" },
+      properties = { screen = screens.main.index, tag = "art", switchtotag = true } },
+    { rule = { class = "Gimp" },
+      properties = { screen = screens.main.index, tag = "art", switchtotag = true } },
+    { rule = { class = "Inkscape" },
+      properties = { screen = screens.main.index, tag = "art", switchtotag = true } },
     { rule = { class = "qutebrowser" },
       properties = { tag = "www" } },
-    { rule = { class = "Spotify" },
-      properties = { tag = "music" } },
-
 }
+-- }}}
+
+-- {{{ global keys
+globalkeys = gears.table.join(
+    awful.key({ modkey }, "Pause",
+        function ()
+                awful.util.spawn_with_shell("/home/setrofim/.local/bin/lockscreen")
+        end)
+)
+--- }}}
+
+-- {{{ client keys
+clientkeys = gears.table.join()
 -- }}}
 
 -- {{{ applications menu
@@ -334,6 +428,10 @@ return  {
     screens = screens,
     rules = rules,
     appmenu = appmenu,
+    audio_output = audio_output,
+    globalkeys = globalkeys,
+    clientkeys = clientkeys,
+    fs_mounts = fs_mounts,
 }
 -- }}}
 

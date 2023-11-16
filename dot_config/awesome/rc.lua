@@ -172,7 +172,8 @@ local keyboardlayout = awful.widget.keyboardlayout()
 -- on a laptop.
 local laptop_widgets = {}
 if have_battery() then
-    laptop_widgets[1] = batteryarc_widget({
+    laptop_widgets = { widget_separator, widget_separator }
+    laptop_widgets[3] = batteryarc_widget({
                         font = theme.font_small,
                         show_current_level = true,
                         arc_thickness = (theme.wibar_size * 0.08),
@@ -180,6 +181,13 @@ if have_battery() then
                     })
 end
 
+
+-- Create a separate file system widget for every mount group listed in the
+-- config.
+fs_widgets = {}
+for i, mount_group in ipairs(config.fs_mounts) do
+     fs_widgets[i] = fs_widget({ mounts = mount_group })
+end
 
 local taglist_buttons = awful.util.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -363,7 +371,7 @@ awful.screen.connect_for_each_screen(function(s)
                         widget_separator,
                         widget_separator,
                         volume_widget {
-                            device = 'alsa_output.pci-0000_00_1f.3.analog-stereo',
+                            device = config.audio_output,
                             widget_type = 'arc',
                             arc_thickness = (theme.wibar_size * 0.08),
                             size = (theme.wibar_size  * 0.8),
@@ -384,7 +392,9 @@ awful.screen.connect_for_each_screen(function(s)
                         }),
                         widget_separator,
                         widget_separator,
-                        fs_widget(),
+                    },
+                    fs_widgets,
+                    {
                         widget_separator,
                         widget_separator,
                     },
@@ -465,14 +475,14 @@ globalkeys = gears.table.join(
     awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
               {description = "show main menu", group = "awesome"}),
 
-    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus(config.screens.main.index)    end,
-              {description = "focus the next screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus(config.screens.main.index)    end,
-              {description = "focus the previous screen", group = "screen"}),
+    awful.key({ modkey, "Control" }, "j", function () awful.screen.focus(config.screens.left.index) end,
+              {description = "focus the left screen", group = "screen"}),
+    awful.key({ modkey, "Control" }, "k", function () awful.screen.focus(config.screens.main.index) end,
+              {description = "focus the main screen", group = "screen"}),
     awful.key({ modkey, "Control" }, "l", function () awful.screen.focus(config.screens.right.index) end,
-              {description = "focus the previous screen", group = "screen"}),
-    awful.key({ modkey, "Control" }, "i", function () awful.screen.focus(config.screens.aux.index)    end,
-              {description = "focus the previous screen", group = "screen"}),
+              {description = "focus the right screen", group = "screen"}),
+    awful.key({ modkey, "Control" }, "i", function () awful.screen.focus(config.screens.aux.index) end,
+              {description = "focus the auxiliary screen", group = "screen"}),
 
     awful.key({ modkey,           }, "`", awful.client.urgent.jumpto,
               {description = "jump to urgent client", group = "client"}),
@@ -500,22 +510,25 @@ globalkeys = gears.table.join(
     awful.key({ modkey, "Shift" }, "Right", function () lain.util.move_tag(1) end), -- move to previous tag
     awful.key({ modkey, "Shift" }, "d", function () lain.util.delete_tag() end),
 
-    awful.key({ modkey, "Shift" }, ".",     function () awful.tag.incmwfact( 0.05)          end,
+    -- Master width factor
+    awful.key({ modkey, "Shift" }, ".",     function () awful.tag.incmwfact(0.05) end,
               {description = "increase master width factor", group = "layout"}),
-    awful.key({ modkey, "Shift" }, ",",     function () awful.tag.incmwfact(-0.05)          end,
+    awful.key({ modkey, "Shift" }, ",",     function () awful.tag.incmwfact(-0.05) end,
               {description = "decrease master width factor", group = "layout"}),
 
-    awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1, nil, true) end,
+    -- Number of masters and columns
+    awful.key({ modkey, }, "[",     function () awful.tag.incnmaster( 1, nil, true) end,
               {description = "increase the number of master clients", group = "layout"}),
-    --awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1, nil, true) end,
-              --{description = "decrease the number of master clients", group = "layout"}),
-    awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1, nil, true)    end,
+    awful.key({ modkey, }, "]",     function () awful.tag.incnmaster(-1, nil, true) end,
+              {description = "decrease the number of master clients", group = "layout"}),
+    awful.key({ modkey, "Control" }, "[",     function () awful.tag.incncol( 1, nil, true) end,
               {description = "increase the number of columns", group = "layout"}),
-    --awful.key({ modkey, "Control" }, "l",     function () awful.tag.incncol(-1, nil, true)    end,
-              --{description = "decrease the number of columns", group = "layout"}),
-    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1)                end,
+    awful.key({ modkey, "Control" }, "]",     function () awful.tag.incncol(-1, nil, true) end,
+              {description = "decrease the number of columns", group = "layout"}),
+
+    awful.key({ modkey,           }, "space", function () awful.layout.inc( 1) end,
               {description = "select next", group = "layout"}),
-    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1)                end,
+    awful.key({ modkey, "Shift"   }, "space", function () awful.layout.inc(-1) end,
               {description = "select previous", group = "layout"}),
 
     awful.key({ modkey, "Control" }, "n",
@@ -530,7 +543,7 @@ globalkeys = gears.table.join(
               {description = "restore minimized", group = "client"}),
 
     -- Screensaver
-    awful.key({ }, "XF86AudioMedia",
+    awful.key({ modkey }, "Pause",
         function ()
                 awful.util.spawn_with_shell("/home/setrofim/.local/bin/lockscreen")
         end),
@@ -591,6 +604,7 @@ globalkeys = gears.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end,
               {description = "show the menubar", group = "launcher"})
 )
+globalkeys = gears.table.join(globalkeys, config.globalkeys)
 
 clientkeys = gears.table.join(
     awful.key({ modkey,           }, "f",
@@ -599,25 +613,25 @@ clientkeys = gears.table.join(
             c:raise()
         end,
         {description = "toggle fullscreen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill()                         end,
+    awful.key({ modkey, "Shift"   }, "c",      function (c) c:kill() end,
               {description = "close", group = "client"}),
     awful.key({ modkey, "Control" }, "space",  awful.client.floating.toggle                     ,
               {description = "toggle floating", group = "client"}),
     awful.key({ modkey, "Control" }, "Return", function (c) c:swap(awful.client.getmaster()) end,
               {description = "move to master", group = "client"}),
 
-    awful.key({ modkey, "Shift"   }, "j",      function (c) c:move_to_screen(config.screens.left.index)    end,
-              {description = "move to screen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "k",      function (c) c:move_to_screen(config.screens.main.index)    end,
-              {description = "move to screen", group = "client"}),
+    awful.key({ modkey, "Shift"   }, "j",      function (c) c:move_to_screen(config.screens.left.index) end,
+              {description = "move client to the left screen", group = "client"}),
+    awful.key({ modkey, "Shift"   }, "k",      function (c) c:move_to_screen(config.screens.main.index) end,
+              {description = "move client to the main screen", group = "client"}),
     awful.key({ modkey, "Shift"   }, "l",      function (c) c:move_to_screen(config.screens.right.index) end,
-              {description = "move to screen", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "i",      function (c) c:move_to_screen(config.screens.aux.index)    end,
-              {description = "move to screen", group = "client"}),
+              {description = "move client to the right screen", group = "client"}),
+    awful.key({ modkey, "Shift"   }, "i",      function (c) c:move_to_screen(config.screens.aux.index) end,
+              {description = "move client to the auxiliary screen", group = "client"}),
 
     awful.key({ modkey,           }, "t",      function (c) c.ontop = not c.ontop            end,
               {description = "toggle keep on top", group = "client"}),
-    awful.key({ modkey, "Shift"   }, "t",      function (c) awful.titlebar.toggle(c)        end,
+    awful.key({ modkey, "Shift"   }, "t",      function (c) awful.titlebar.toggle(c) end,
               {description = "toggle title bar", group = "client"}),
     awful.key({ modkey,           }, "n",
         function (c)
@@ -645,6 +659,7 @@ clientkeys = gears.table.join(
         end ,
         {description = "(un)maximize horizontally", group = "client"})
 )
+clientkeys = gears.table.join(clientkeys, config.clientkeys)
 
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it work on any keyboard layout.
