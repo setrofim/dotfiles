@@ -21,3 +21,5 @@ configs:
 
 faience-azur-icon-theme-lite
 gnome-themes-extra
+breeze-icons
+arc-icon-theme
