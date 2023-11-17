@@ -186,7 +186,11 @@ end
 -- config.
 fs_widgets = {}
 for i, mount_group in ipairs(config.fs_mounts) do
-     fs_widgets[i] = fs_widget({ mounts = mount_group })
+     fs_widgets[i] = fs_widget({
+         mounts = mount_group,
+         popup_bg = theme.bg_normal,
+         popup_border_color = theme.border_focus,
+     })
 end
 
 local taglist_buttons = awful.util.table.join(
@@ -381,14 +385,20 @@ awful.screen.connect_for_each_screen(function(s)
                         cpu_icon,
                         cpu_widget({
                             width = dpi(75),
+                            popup_border_color = theme.border_focus,
+                            popup_max_width = dpi(500),
+                            enable_kill_button = true,
                         }),
                         widget_separator,
                         widget_separator,
                         ram_widget({
-                            color_free = theme.fg_muted,
-                            color_used = theme.fg_urgent,
+                            color_free = "#89B689",
+                            color_buf = "#9699A2",
+                            color_used = "#B66969",
+                            border_color = theme.border_focus,
                             widget_height = theme.wibar_size,
                             widget_width = theme.wibar_size,
+                            widget_show_buf = true,
                         }),
                         widget_separator,
                         widget_separator,
