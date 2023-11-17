@@ -14,6 +14,7 @@ local function worker(user_args)
     local color_used = args.color_used or beautiful.bg_urgent
     local color_free = args.color_free or beautiful.fg_normal
     local color_buf  = args.color_buf  or beautiful.border_color_active
+    local border_color = args.border_color or beautiful.border_color_active
     local widget_show_buf = args.widget_show_buf or false
     local widget_height = args.widget_height or 25
     local widget_width = args.widget_width or 25
@@ -47,7 +48,7 @@ local function worker(user_args)
           },
        },
        shape = gears.shape.rounded_rect,
-       border_color = beautiful.border_color_active,
+       border_color = border_color,
        border_width = 1,
        offset = { y = 5 },
     }
@@ -67,13 +68,13 @@ local function worker(user_args)
             if widget_show_buf then
                 widget.data = { used, free, buff_cache }
             else
-                widget.data = { used, total-used }
+                widget.data = { used, free+buff_cache }
             end
 
             if popup.visible then
                popup:get_widget().data_list = {
-                  {'used ' .. getPercentage(used + used_swap), used + used_swap},
-                  {'free ' .. getPercentage(free + free_swap), free + free_swap},
+                  {'used ' .. getPercentage(used), used},
+                  {'free ' .. getPercentage(free), free},
                   {'buff_cache ' .. getPercentage(buff_cache), buff_cache}
                 }
             end
@@ -85,8 +86,8 @@ local function worker(user_args)
         awful.util.table.join(
            awful.button({}, 1, function()
                  popup:get_widget().data_list = {
-                    {'used ' .. getPercentage(used + used_swap), used + used_swap},
-                    {'free ' .. getPercentage(free + free_swap), free + free_swap},
+                    {'used ' .. getPercentage(used), used},
+                    {'free ' .. getPercentage(free), free},
                     {'buff_cache ' .. getPercentage(buff_cache), buff_cache}
                 }
 

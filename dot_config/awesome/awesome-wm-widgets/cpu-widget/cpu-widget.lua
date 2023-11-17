@@ -93,6 +93,8 @@ local function worker(user_args)
     local step_spacing = args.step_spacing or 1
     local color = args.color or beautiful.fg_normal
     local background_color = args.background_color or "#00000000"
+    local popup_border_color = args.popup_border_color or beautiful.bg_normal
+    local popup_max_width = args.popup_max_width or 300
     local enable_kill_button = args.enable_kill_button or false
     local process_info_max_length = args.process_info_max_length or -1
     local timeout = args.timeout or 1
@@ -120,8 +122,8 @@ local function worker(user_args)
         visible = false,
         shape = gears.shape.rounded_rect,
         border_width = 1,
-        border_color = beautiful.bg_normal,
-        maximum_width = 300,
+        border_color = popup_border_color,
+        maximum_width = popup_max_width,
         offset = { y = 5 },
         widget = {}
     }

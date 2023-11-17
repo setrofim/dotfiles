@@ -87,7 +87,7 @@ local github_widget = wibox.widget {
             self:get_children_by_id('icon')[1]:set_opacity(1)
             self:get_children_by_id('icon')[1]:emit_signal('widget:redraw_needed')
         else
-	    self:get_children_by_id('txt')[1]:set_text(new_value)
+            self:get_children_by_id('txt')[1]:set_text(new_value)
             self:get_children_by_id('error_marker')[1]:set_visible(true)
             self:get_children_by_id('icon')[1]:set_opacity(0.2)
             self:get_children_by_id('icon')[1]:emit_signal('widget:redraw_needed')

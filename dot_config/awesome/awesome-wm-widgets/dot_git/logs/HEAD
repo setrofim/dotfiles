@@ -1,9 +1,0 @@
-0000000000000000000000000000000000000000 0f48c9aa7c5f26d19d896d615f81ea074d0001a8 Sergei Trofimov <sergei.trofimov@arm.com> 1516113772 +0000	clone: from https://github.com/streetturtle/awesome-wm-widgets.git
-0f48c9aa7c5f26d19d896d615f81ea074d0001a8 a0b4dc57619a5378c555fa5193ef97e038dce776 setrofim <setrofim@gmail.com> 1600863012 +0100	rebase (start): checkout origin/master
-a0b4dc57619a5378c555fa5193ef97e038dce776 a0b4dc57619a5378c555fa5193ef97e038dce776 setrofim <setrofim@gmail.com> 1600863012 +0100	rebase (finish): returning to refs/heads/master
-a0b4dc57619a5378c555fa5193ef97e038dce776 a878abaa6802844c3bbb5fbd14f5ba21221eddfb setrofim <setrofim@gmail.com> 1699713742 +0000	reset: moving to origin/master
-a878abaa6802844c3bbb5fbd14f5ba21221eddfb a55abdde5e5323dbe5bec4cbb9941f6e3041f809 setrofim <setrofim@gmail.com> 1699782884 +0000	commit: net-speed-widget: color icons
-a55abdde5e5323dbe5bec4cbb9941f6e3041f809 d69c5d2fb9718f3bd21207f9f16a827436ec53df setrofim <setrofim@gmail.com> 1699782935 +0000	commit: spotify-widget: change appearance
-d69c5d2fb9718f3bd21207f9f16a827436ec53df c68859c4b87f8e5f9f3eff539c6dd5d54bec4a21 setrofim <setrofim@gmail.com> 1699783282 +0000	commit (amend): spotify-widget: change appearance
-c68859c4b87f8e5f9f3eff539c6dd5d54bec4a21 6438a7fba1999e62753674b1c0b13afa1615bfd5 setrofim <setrofim@gmail.com> 1699791182 +0000	commit: run-shell: adjustments for my theme
-6438a7fba1999e62753674b1c0b13afa1615bfd5 872cc6f45f8647bc2817a9528d134f0928aa611e setrofim <setrofim@gmail.com> 1699791610 +0000	commit (amend): run-shell: adjustments for my theme
