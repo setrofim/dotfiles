@@ -1,0 +1,12 @@
+#!/bin/bash
+session_name=${1:-main}
+where=${2:-$HOME}
+
+# needed by tmux.conf
+export PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
+
+if [[ ! -e "/tmp/tmux-$(id -u)/default" ||
+        $(tmux info 2>&1) == "no server running"* ||
+        ("$(tmux list-sessions | cut -f1 -d: | grep $session_name)" == "") ]]; then
+    tmux new-session -d -s $session_name -c $where "$SHELL"
+fi
