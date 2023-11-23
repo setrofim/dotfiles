@@ -174,6 +174,8 @@ Plug 'stevearc/aerial.nvim' " Code outliner (tagbar replacement)
 
 Plug 'nvim-tree/nvim-web-devicons' " devicons fonts (icon glyphs)
 
+Plug 'echasnovski/mini.map' " mini map (buffer text overview)
+
 call plug#end()
 
 
@@ -445,6 +447,26 @@ if has('nvim-0.4.0') || has('patch-8.2.0750')
   vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
   vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 endif
+
+" minimap
+lua<<EOF
+MiniMap = require("mini.map")
+
+
+MiniMap.setup({
+ symbols = {
+   encode = MiniMap.gen_encode_symbols.dot('4x2'),
+   scroll_view = '┋',
+   scroll_line = '▶',
+ },
+})
+vim.keymap.set('n', '<Leader>mc', MiniMap.close)
+vim.keymap.set('n', '<Leader>mf', MiniMap.toggle_focus)
+vim.keymap.set('n', '<Leader>mo', MiniMap.open)
+vim.keymap.set('n', '<Leader>mr', MiniMap.refresh)
+vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side)
+vim.keymap.set('n', '<Leader>mt', MiniMap.toggle)
+EOF
 
 " Aerial Code Ouliner
 lua << EOF
