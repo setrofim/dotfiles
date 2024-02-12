@@ -24,15 +24,25 @@ require('lazy').setup({
   'rafaqz/ranger.vim',  -- use ranger as file browser
   'ellisonleao/gruvbox.nvim', -- colorscheme
   'jlanzarotta/bufexplorer', -- better buffer navigation
-  'echasnovski/mini.map', -- nin map (buffer text overview)
+  'echasnovski/mini.map', -- mini map (buffer text overview)
   'tpope/vim-fugitive', -- git integration
   'scrooloose/nerdcommenter', -- code commenting
+  'nielsadb/vim-filtering', -- filter lines in buffer
+  {
+    'nvim-telescope/telescope.nvim', tag = '0.1.5',
+    dependencies = {
+        'nvim-lua/plenary.nvim',
+        'ryanoasis/vim-devicons',
+    },
+  },
   'AndrewRadev/sideways.vim', -- move function args, etc. around
   {
      'vim-airline/vim-airline',
      dependencies = {
       'nvim-tree/nvim-web-devicons',
       'ryanoasis/vim-devicons',
+      'nvim-treesitter/nvim-treesitter',
+      'sharkdp/fd',
      },
   }, -- powerline-like status bar
   'vim-airline/vim-airline-themes', -- themes for the above
@@ -51,3 +61,5 @@ require('lazy').setup({
   'nathanalderson/yang.vim', -- YANG
   'nblock/vim-dokuwiki', -- DokuWiki
 })
+
+-- vim: set et sts=4 sw=4:
