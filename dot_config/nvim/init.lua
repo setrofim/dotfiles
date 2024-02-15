@@ -13,6 +13,8 @@ vim.opt.wildmenu = true
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
+vim.keymap.set('n', '<leader><C-r>', ':luafile ~/.config/nvim/init.lua<CR>')
+
 vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
 vim.keymap.set('n', '<C-l>', '<C-w>l')
@@ -306,22 +308,23 @@ vim.keymap.set('n', ',v', ":call FilteringNew().addToParameter('alt', expand(\"<
 --vim.keymap.set('n', ',g', ':call FilteringGetForSource().return()<CR>')
 
 -- telescope
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', ',ff', builtin.find_files, {})
-vim.keymap.set('n', ',fg', builtin.live_grep, {})
-vim.keymap.set('n', ',fb', builtin.buffers, {})
-vim.keymap.set('n', ',fh', builtin.help_tags, {})
-vim.keymap.set('n', ',fB', builtin.git_bcommits, {})
-vim.keymap.set('n', ',fC', builtin.git_commits, {})
-vim.keymap.set('n', ',fM', builtin.marks, {})
-vim.keymap.set('n', ',fm', builtin.keymaps, {})
+local telescope = require('telescope.builtin')
+vim.keymap.set('n', ',ff', telescope.find_files, {})
+vim.keymap.set('n', ',fg', telescope.live_grep, {})
+vim.keymap.set('n', ',fb', telescope.buffers, {})
+vim.keymap.set('n', ',fh', telescope.help_tags, {})
+vim.keymap.set('n', ',fB', telescope.git_bcommits, {})
+vim.keymap.set('n', ',fC', telescope.git_commits, {})
+vim.keymap.set('n', ',fM', telescope.marks, {})
+vim.keymap.set('n', ',fm', telescope.keymaps, {})
 
-vim.keymap.set('n', ',fi', builtin.lsp_incoming_calls, {})
-vim.keymap.set('n', ',fo', builtin.lsp_outgoing_calls, {})
-vim.keymap.set('n', ',fd', builtin.lsp_definitions, {})
-vim.keymap.set('n', ',fr', builtin.lsp_references, {})
-vim.keymap.set('n', ',fI', builtin.lsp_implementations, {})
-vim.keymap.set('n', ',fD', builtin.diagnostics, {})
+vim.keymap.set('n', ',fi', telescope.lsp_incoming_calls, {})
+vim.keymap.set('n', ',fo', telescope.lsp_outgoing_calls, {})
+vim.keymap.set('n', ',fd', telescope.lsp_definitions, {})
+vim.keymap.set('n', ',fs', telescope.lsp_dynamic_workspace_symbols, {})
+vim.keymap.set('n', ',fr', telescope.lsp_references, {})
+vim.keymap.set('n', ',fI', telescope.lsp_implementations, {})
+vim.keymap.set('n', ',fD', telescope.diagnostics, {})
 
 -- treesitter
 require('nvim-treesitter.configs').setup({

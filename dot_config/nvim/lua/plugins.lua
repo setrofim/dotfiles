@@ -8,7 +8,7 @@ if not vim.loop.fs_stat(lazypath) then
         "clone",
         "--filter=blob:none",
         "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
+        "--branch=stable",
         lazypath,
     })
 end
@@ -28,31 +28,39 @@ require('lazy').setup({
     'tpope/vim-fugitive', -- git integration
     'scrooloose/nerdcommenter', -- code commenting
     'nielsadb/vim-filtering', -- filter lines in buffer
+    'stevearc/aerial.nvim', -- code outliner (tagbar replacement)
+    'AndrewRadev/sideways.vim', -- move function args, etc. around
+    'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
+
+    -- fuzzy search
     {
-        'nvim-telescope/telescope.nvim', tag = '0.1.5',
+        'nvim-telescope/telescope.nvim',
+        tag = '0.1.5',
         dependencies = {
             'nvim-lua/plenary.nvim',
             'ryanoasis/vim-devicons',
         },
     },
-    'AndrewRadev/sideways.vim', -- move function args, etc. around
+
+    -- powerline-like status bar
     {
         'vim-airline/vim-airline',
         dependencies = {
+            'vim-airline/vim-airline-themes',
             'nvim-tree/nvim-web-devicons',
             'ryanoasis/vim-devicons',
             'nvim-treesitter/nvim-treesitter',
             'sharkdp/fd',
         },
     },
-
-    -- powerline-like status bar
-    'vim-airline/vim-airline-themes', -- themes for the above
     'nvim-tree/nvim-web-devicons', -- additional icons
     'ryanoasis/vim-devicons', -- additional icons
 
-    {'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'}, -- tree-sitter AST integration (requried for aerial below)
-    'stevearc/aerial.nvim', -- code outliner (tagbar replacement)
+    -- tree-sitter AST integration (requried for aerial below)
+    {
+        'nvim-treesitter/nvim-treesitter',
+        build = ':TSUpdate',
+    },
 
     -- autocompletion
     'neovim/nvim-lspconfig',
