@@ -1,10 +1,11 @@
 -- {{{
 local awful = require("awful")
 local gears = require("gears")
+local modkey = modkey ---@diagnostic disable-line:undefined-global
 -- }}}
 ------------------------------------------------------------------------------
 --
--- enviroment-specific configuration
+-- environment-specific configuration
 --
 -- These will need to be adjusted for every new system, and, hopefully, rc.lua
 -- can remain unchanged.
@@ -49,7 +50,7 @@ local file_manager = "thunar"
 -- {{{ screen config
 
 --  Configuration tables for individual screens. There should be one for each
---  pysical display present in a setup. These then get mapped onto the
+--  physical display present in a setup. These then get mapped onto the
 --  "standard" layout using the "screens" table below.
 --  note: do not explicitly specify screen in the tag configs below -- that
 --  will be done automatically.
@@ -180,8 +181,8 @@ local right_screen_veritical = {
 --   where <S> is the shortcut letter associated with the screen.
 --
 --   In order to avoid getting errors, all four screens should be assigned a
---   config. If the actual setup does not crosspond to the existing layout,
---   config for one of the exiting screens should be re-used of the missing
+--   config. If the actual setup does not correspond to the expected layout,
+--   config for one of the exiting screens should be re-used for the missing
 --   ones. E.g. on a two screen setup, where the right screen is the one that
 --   is mainly used, "main", "right", and "aux" entries below might be assigned
 --   to the same config.
@@ -225,7 +226,7 @@ local rules = {
 -- }}}
 
 -- {{{ global keys
-globalkeys = gears.table.join(
+local globalkeys = gears.table.join(
     awful.key({ modkey }, "Pause",
         function ()
                 awful.util.spawn_with_shell("/home/setrofim/.local/bin/lockscreen")
@@ -234,7 +235,7 @@ globalkeys = gears.table.join(
 --- }}}
 
 -- {{{ client keys
-clientkeys = gears.table.join()
+local clientkeys = gears.table.join()
 -- }}}
 
 -- {{{ applications menu
@@ -415,13 +416,12 @@ appmenu.Appmenu = {
 
 ------------------------------------------------------------------------------
 --
--- end of enviroment-specific configuration
+-- end of environment-specific configuration
 --
 ------------------------------------------------------------------------------
 
 -- {{{ return
 return  {
-    wallpaper_base = wallpaper_base,
     terminal = terminal,
     editor = editor,
     browser = browser,
