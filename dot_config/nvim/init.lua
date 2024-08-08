@@ -1,3 +1,7 @@
+-- The following re-definition is to suppress undefined-global warnings just for "vim" throughout the file
+---@diagnostic disable-next-line: undefined-global
+local vim = vim
+
 vim.o.number = true
 vim.o.ignorecase = true
 vim.o.smartcase = true
