@@ -26,6 +26,8 @@ alias qbsoc="qutebrowser -R --nowindow --qt-arg name qutebrowser-social ':sessio
 alias step=step-cli
 alias jwt="step-cli crypto jwt"
 alias marp="marp --config ~/.config/marp.config.js"
+alias mutt=neomutt
+alias mail="mutt -F ~/.config/neomutt/proton-muttrc"
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
@@ -88,7 +90,6 @@ function __hostcolor() {
 
 function _prompt_command {
     local exit_code=$?
-    local exit_prompt=""
 
     if [[ $COLORS -ge 256 ]]; then
         local purp='\[\e[38;5;69m\]'
@@ -124,6 +125,11 @@ function _prompt_command {
 
     branch=$(parse_git_branch)
 
+    local venv=""
+    if [[ "$VIRTUAL_ENV_PROMPT" != "" ]]; then
+	    venv+="${blue}${VIRTUAL_ENV_PROMPT% }${purp}"
+    fi
+
     echo $prompt
     if [[ $COLORS -ge 8 ]]; then
         PS1="${purp}┌─┤${yell}\D{%Y-%m-%dT%H:%M:%S}${purp}├─┤${who}\u${reset}${purp}@${host}\h${purp}├─┤${blue}\w${purp}"
@@ -134,7 +140,7 @@ function _prompt_command {
         if [[ $exit_code -gt 0 ]]; then
             PS1+="├─┤${red}$exit_code${purp}"
         fi
-        PS1+="│${reset}\n${purp}└┤\\\$${reset} "
+        PS1+="│${reset}\n${purp}└${venv}┤\\\$${reset} "
     else
             PS1='\u@\h \w\n\$ '
     fi
@@ -151,8 +157,6 @@ export PATH=$PATH:$HOME/.gem/ruby/2.3.0/bin
 export PATH=$PATH:$HOME/.gem/ruby/2.7.0/bin
 export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/bin
-
-export GITHUB_TOKEN=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
 
 export OPENAUDIBLE_HOME=$HOME/dopamine/audible/
 
