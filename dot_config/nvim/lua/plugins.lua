@@ -1,6 +1,9 @@
 -- see:
 --    https://github.com/folke/lazy.nvim
 --
+---@diagnostic disable-next-line: undefined-global
+local vim = vim
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -31,6 +34,7 @@ require('lazy').setup({
     'stevearc/aerial.nvim', -- code outliner (tagbar replacement)
     'AndrewRadev/sideways.vim', -- move function args, etc. around
     'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
+    'kylechui/nvim-surround', -- add, remove, and change sourrounding brackets/parents/tags/etc.
 
     -- fuzzy search
     {

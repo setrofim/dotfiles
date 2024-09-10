@@ -373,4 +373,6 @@ require('nvim-treesitter.configs').setup({
 })
 vim.opt.runtimepath:append("~/.cache/treesitter")
 
+require('nvim-surround').setup()
+
 -- vim: set et sts=4  sw=4:
