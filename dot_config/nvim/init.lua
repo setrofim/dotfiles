@@ -17,6 +17,8 @@ vim.opt.wildmenu = true
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
+vim.keymap.set('n', '<leader>e', ':tabe %<CR>')
+
 vim.keymap.set('n', '<leader><C-r>', ':luafile ~/.config/nvim/init.lua<CR>')
 
 vim.keymap.set('n', '<C-j>', '<C-w>j')
@@ -375,4 +377,6 @@ vim.opt.runtimepath:append("~/.cache/treesitter")
 
 require('nvim-surround').setup()
 
--- vim: set et sts=4  sw=4:
+-- Debug Adapter Protocol (DAP) configuration
+-- should happen after colorscheme loading to ensure correct colors in the UI
+require('dapconfig')

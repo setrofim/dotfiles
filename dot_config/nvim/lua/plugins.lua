@@ -20,7 +20,20 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
     'wbthomason/packer.nvim', -- plugin manager (can manage itself)
 
-    'mfussenegger/nvim-dap', -- java debug
+    -- debug
+    {
+      "mfussenegger/nvim-dap",
+      dependencies = {
+            'nvim-neotest/nvim-nio', -- async I/O (required for nvim-dap-ui)
+            'rcarriga/nvim-dap-ui',
+        },
+    },
+
+    'ldelossa/nvim-dap-projects', -- per-project debug configuration
+    'mfussenegger/nvim-dap-python', -- Python debug
+    'leoluz/nvim-dap-go', -- Go debug
+
+    -- misc
     'mfussenegger/nvim-jdtls', -- java language server
     'nvim-lua/plenary.nvim', -- additional lua functions
     'neovim/nvim-lspconfig', -- language server configuration
