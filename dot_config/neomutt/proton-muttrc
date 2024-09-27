@@ -1,0 +1,59 @@
+set mbox_type=Maildir
+set folder=~/storage/mail/proton/mail
+set spool_file=+INBOX
+set record=+Sent
+set postponed=+Drafts
+set from="setrofim <setrofim@proton.me>"
+
+unset envelope_from_address
+
+# note: cannot use reverse_name because Proton does not allow setting the From:
+# field to an address not associated with the Proton account.
+#set reverse_name
+alternates "(setrofim|sergeitrofimov.*)@g(oogle)?mail.com" sergei.trofimov@cantab.net
+
+save-hook '~f "@amazon(\.co\.uk|\.com)$"' "=Folders.amazon"
+save-hook '~f "@t\.deliveroo\.com$"' "=Folders.deliveroo"
+save-hook '~f "@linkedin\.com$"' "=Folders.linkedin"
+save-hook '~f "@spotify\.com$"' "=Folders.spotify"
+save-hook '~s "\\[ietf-rats-wg/"' "=Folders.ietf-rats-wg"
+save-hook '~s "\\[ARM-software/(devlib|workload-automation)"' "=Folders.wa-devlib"
+save-hook '~s "\\[veraison/"' "=Folders.veraison"
+save-hook '~f "@github\.com"' "=Folders.github"
+save-hook '~f "@patreon\.com"' "=Folders.patreon"
+save-hook '~s "receipt"' "=Folders.receipts"
+save-hook '~f "drmaciver@substack.com"' "=Folders.overthinking-everything"
+save-hook '.*' "=Archive"
+
+source ~/storage/mail/proton/mailboxes
+source ~/.config/neomutt/config
+
+set header_cache=~/.cache/mutt/proton/header_cache
+
+#------------------------------------------------------------
+# Macros
+#------------------------------------------------------------
+macro index,pager,attach <F4> \
+  "!ssh proton@acetylcholine '/home/proton/.local/bin/refresh-mail-now'<enter>" \
+    "refersh all mailboxes"
+
+macro index,pager,attach <F5> \
+  "!ssh proton@acetylcholine '/home/proton/.local/bin/refresh-mail-now INBOX'<enter>" \
+    "refersh INBOX"
+
+set my_mu_home=~/storage/mail/proton/mu
+set my_mu_cache=~/.cache/mutt/mu_results
+
+set query_command="mu cfind --muhome=$my_mu_home --format=mutt-ab '%s'"
+
+macro index ,f \
+  "<enter-command>unset wait_key<enter><shell-escape>mu-find-mutt $my_mu_home $my_mu_cache<enter><change-folder-readonly>$my_mu_cache<enter>" \
+      "search mail (mu)"
+
+set my_notmuch_cache=~/.cache/mutt/notmuch_results
+
+macro index ,F \
+  "<enter-command>set my_old_pipe_decode=\$pipe_decode my_old_wait_key=\$wait_key nopipe_decode nowait_key<enter><shell-escape>notmuch-mutt --remove-dups --output-dir $my_notmuch_cache --prompt search<enter><change-folder-readonly>$my_notmuch_cache<enter><enter-command>set pipe_decode=\$my_old_pipe_decode wait_key=\$my_old_wait_key<enter>" \
+      "search mail (notmuch)"
+
+# vim: set ft=neomuttrc :
