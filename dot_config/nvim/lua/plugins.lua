@@ -22,33 +22,59 @@ require('lazy').setup({
 
     -- debug
     {
-      "mfussenegger/nvim-dap",
-      dependencies = {
+        "mfussenegger/nvim-dap",
+        dependencies = {
             'nvim-neotest/nvim-nio', -- async I/O (required for nvim-dap-ui)
             'rcarriga/nvim-dap-ui',
         },
     },
 
-    'ldelossa/nvim-dap-projects', -- per-project debug configuration
+    'ldelossa/nvim-dap-projects',   -- per-project debug configuration
     'mfussenegger/nvim-dap-python', -- Python debug
-    'leoluz/nvim-dap-go', -- Go debug
+    'leoluz/nvim-dap-go',           -- Go debug
 
     -- misc
-    'mfussenegger/nvim-jdtls', -- java language server
-    'nvim-lua/plenary.nvim', -- additional lua functions
-    'neovim/nvim-lspconfig', -- language server configuration
-    'rafaqz/ranger.vim',  -- use ranger as file browser
-    'ellisonleao/gruvbox.nvim', -- colorscheme
-    'jlanzarotta/bufexplorer', -- better buffer navigation
-    'echasnovski/mini.map', -- mini map (buffer text overview)
-    'tpope/vim-fugitive', -- git integration
-    'scrooloose/nerdcommenter', -- code commenting
-    'nielsadb/vim-filtering', -- filter lines in buffer
-    'stevearc/aerial.nvim', -- code outliner (tagbar replacement)
-    'AndrewRadev/sideways.vim', -- move function args, etc. around
+    'mfussenegger/nvim-jdtls',       -- java language server
+    'nvim-lua/plenary.nvim',         -- additional lua functions
+    'neovim/nvim-lspconfig',         -- language server configuration
+    'rafaqz/ranger.vim',             -- use ranger as file browser
+    'ellisonleao/gruvbox.nvim',      -- colorscheme
+    'jlanzarotta/bufexplorer',       -- better buffer navigation
+    'echasnovski/mini.map',          -- mini map (buffer text overview)
+    'tpope/vim-fugitive',            -- git integration
+    'scrooloose/nerdcommenter',      -- code commenting
+    'nielsadb/vim-filtering',        -- filter lines in buffer
+    'stevearc/aerial.nvim',          -- code outliner (tagbar replacement)
+    'AndrewRadev/sideways.vim',      -- move function args, etc. around
     'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
-    'kylechui/nvim-surround', -- add, remove, and change sourrounding brackets/parents/tags/etc.
-    'smithbm2316/centerpad.nvim', -- center single buffer
+    'kylechui/nvim-surround',        -- add, remove, and change sourrounding brackets/parents/tags/etc.
+    'smithbm2316/centerpad.nvim',    -- center single buffer
+
+    -- some additional icons (used by which-key)
+    {
+        'nvim-mini/mini.nvim',
+        version = '*',
+    },
+
+    -- which-key: show key mappings
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        opts = {
+            -- your configuration comes here
+            -- or leave it empty to use the default settings
+            -- refer to the configuration section below
+        },
+        keys = {
+            {
+                "<leader>?",
+                function()
+                    require("which-key").show({ global = false })
+                end,
+                desc = "Buffer Local Keymaps (which-key)",
+            },
+        },
+    },
 
     -- fuzzy search
     {
@@ -72,7 +98,7 @@ require('lazy').setup({
         },
     },
     'nvim-tree/nvim-web-devicons', -- additional icons
-    'ryanoasis/vim-devicons', -- additional icons
+    'ryanoasis/vim-devicons',      -- additional icons
 
     -- tree-sitter AST integration (requried for aerial below)
     {
@@ -91,13 +117,13 @@ require('lazy').setup({
     'hrsh7th/vim-vsnip',
 
     -- syntax highlighting
-    'trapd00r/irc.vim', -- IRC logs
+    'trapd00r/irc.vim',         -- IRC logs
     'Glench/Vim-Jinja2-Syntax', -- jinja2 templates
-    'vim-scripts/django.vim', -- Django templates
-    'tsandall/vim-rego', -- rego (OPA policy language)
-    'aklt/plantuml-syntax', -- PlantUML
-    'nathanalderson/yang.vim', -- YANG
-    'nblock/vim-dokuwiki', -- DokuWiki
+    'vim-scripts/django.vim',   -- Django templates
+    'tsandall/vim-rego',        -- rego (OPA policy language)
+    'aklt/plantuml-syntax',     -- PlantUML
+    'nathanalderson/yang.vim',  -- YANG
+    'nblock/vim-dokuwiki',      -- DokuWiki
 })
 
 -- vim: set et sts=4 sw=4:

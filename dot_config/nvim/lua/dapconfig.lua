@@ -59,28 +59,28 @@ dap.listeners.after.event_initialized["dapui_config"]=function() dapui.open() en
 -- do not close automatically so that I can examine console output
 --dap.listeners.before.event_terminated["dapui_config"]=function() dapui.close() end
 --dap.listeners.before.event_exited["dapui_config"]=function() dapui.close() end
-vim.keymap.set('n', '<leader>do', require 'dapui'.open)
-vim.keymap.set('n', '<leader>dc', require 'dapui'.close)
+vim.keymap.set('n', '<leader>do', require 'dapui'.open, { desc = 'open debugger UI' })
+vim.keymap.set('n', '<leader>dc', require 'dapui'.close, { desc = 'close debugger UI' })
 
 vim.fn.sign_define('DapBreakpoint',{ text ='🔴', texthl ='', linehl ='', numhl =''})
 
-vim.keymap.set('n', '<F5>', require 'dap'.continue)
-vim.keymap.set('n', '<F6>', require 'dap'.terminate)
-vim.keymap.set('n', '<F10>', require 'dap'.step_over)
-vim.keymap.set('n', '<F11>', require 'dap'.step_into)
-vim.keymap.set('n', '<F12>', require 'dap'.step_out)
-vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint)
-vim.keymap.set('n', '<leader>cb', require 'dap'.clear_breakpoints)
+vim.keymap.set('n', '<F5>', require 'dap'.continue, { desc = 'continue debugger' })
+vim.keymap.set('n', '<F6>', require 'dap'.terminate, { desc = 'terminate debugger' })
+vim.keymap.set('n', '<F10>', require 'dap'.step_over, { desc = 'debugger step over' })
+vim.keymap.set('n', '<F11>', require 'dap'.step_into, { desc = 'debugger step into' })
+vim.keymap.set('n', '<F12>', require 'dap'.step_out, { desc = 'debugger step out' })
+vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint, { desc = 'toggle breakpoint' })
+vim.keymap.set('n', '<leader>cb', require 'dap'.clear_breakpoints,{ desc = 'clear breakpoint' })
 
 vim.keymap.set("n", "<leader>di", function()
   dap.repl.open()
   dap.repl.execute(vim.fn.expand("<cexpr>"))
-end)
+end, { desc = 'debugger repl cexpr' })
 vim.keymap.set("v", "<leader>di", function()
   local lines = vim.fn.getregion(vim.fn.getpos("."), vim.fn.getpos("v"))
   dap.repl.open()
   dap.repl.execute(table.concat(lines, "\n"))
-end)
+end, { desc = 'debugger repl visual selection' })
 
 -- Python
 require('dap-python').setup('python')

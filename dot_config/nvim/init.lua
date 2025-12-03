@@ -17,9 +17,8 @@ vim.opt.wildmenu = true
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
-vim.keymap.set('n', '<leader>e', ':tabe %<CR>')
-
-vim.keymap.set('n', '<leader><C-r>', ':luafile ~/.config/nvim/init.lua<CR>')
+vim.keymap.set('n', '<leader><C-r>', ':luafile ~/.config/nvim/init.lua<CR>',
+    { desc = 'reload init.lua' })
 
 vim.keymap.set('n', '<C-j>', '<C-w>j')
 vim.keymap.set('n', '<C-k>', '<C-w>k')
@@ -35,22 +34,22 @@ vim.keymap.set('c', '<M-f>', '<S-Right>')
 vim.keymap.set('c', '<M-d>', '<S-Right><Delete>')
 vim.keymap.set('c', '<C-g>', '<C-c>')
 
-vim.keymap.set("n", "]g", vim.diagnostic.goto_next)
-vim.keymap.set("n", "[g", vim.diagnostic.goto_prev)
+vim.keymap.set("n", "]g", vim.diagnostic.goto_next, { desc = 'go to next diagnostic' })
+vim.keymap.set("n", "[g", vim.diagnostic.goto_prev, { desc = 'go previous next diagnostic' })
 vim.keymap.set("n", "]e", function()
     vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
-end)
+end, { desc = 'go to next error' })
 vim.keymap.set("n", "[e", function()
     vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR })
-end)
+end, { desc = 'go to previous error' })
 vim.keymap.set("n", "]w", function()
     vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARNING })
-end)
+end, { desc = 'go to next warning' })
 vim.keymap.set("n", "[w", function()
     vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.WARNING })
-end)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist)
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float)
+end, { desc = 'go to previous warning' })
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, { desc = 'add buffer diagnostics to the location list' })
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = 'open diagnostic floating window' })
 
 function MapF1()
     if vim.bo.buftype == 'help' then
@@ -67,7 +66,8 @@ vim.keymap.set('n', '<F3>', 'a<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR><Esc>')
 vim.keymap.set('i', '<F3>', '<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR>')
 
 -- remove all trailing whitespace
-vim.keymap.set('n', '<leader>dt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]])
+vim.keymap.set('n', '<leader>dt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]],
+    { desc = 'delete trailing whitespace (buffer-wide)' })
 
 -- highlight trailing whitespace
 vim.cmd([[
@@ -99,8 +99,16 @@ for _, ftm in ipairs(ft_maps) do
     )
 end
 
-
--- Autocommmands
+-- reflow that ignores formatprg. This is needed to be able to format Go comments.
+-- for go, formatprg=gofmt. This is needed to ensure that code gets formatted properly,
+-- unformatunately gofmt does not allow specifying comment width (by design, it does not
+-- enforce comment length).
+vim.keymap.set("n", "gw", function()
+    local save = vim.opt_local.formatprg or ""
+    vim.opt_local.formatprg = ""
+    vim.cmd('normal! gq')
+    vim.opt_local.formatprg = save
+end, { buffer = true, desc = 'reflow without formatprg' })
 
 ---
 --  Plugin Config
@@ -275,24 +283,23 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         -- Buffer local mappings.
         -- See `:help vim.lsp.*` for documentation on any of the below functions
-        local opts = { buffer = ev.buf }
-        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, opts)
-        vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts)
-        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-        vim.keymap.set('n', '<C-K>', vim.lsp.buf.signature_help, opts)
-        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts)
-        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts)
+        vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc = 'go to declaration' })
+        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc = 'go to definition' })
+        vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'hover' })
+        vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = ev.buf, desc = 'go to implmentation' })
+        vim.keymap.set('n', '<C-K>', vim.lsp.buf.signature_help, { buffer = ev.buf, desc = 'show signature help' })
+        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, { buffer = ev.buf, desc = 'add workspace folder' })
+        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, { buffer = ev.buf, desc = 'remove workspace folder' })
         vim.keymap.set('n', '<space>wl', function()
             print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-        end, opts)
-        vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, opts)
-        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts)
-        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts)
-        vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+        end, { buffer = ev.buf, desc = 'list workspace folders' })
+        vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, { buffer = ev.buf, desc = 'go to type definition' })
+        vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, { buffer = ev.buf, desc = 'rename' })
+        vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, { buffer = ev.buf, desc = 'code action' })
+        vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = ev.buf })
         vim.keymap.set('n', '<space>f', function()
             vim.lsp.buf.format { async = true }
-        end, opts)
+        end, { buffer = ev.buf, desc = 'format buffer' })
     end,
 })
 
@@ -315,13 +322,13 @@ vim.cmd('colorscheme gruvbox')
 
 -- ranger
 vim.g.ranger_replace_netrw = 1
-vim.keymap.set('n', '<leader>f', ':silent RangerEdit<CR>')
+vim.keymap.set('n', '<leader>f', ':silent RangerEdit<CR>', { desc = 'open file browser' })
 
 
 -- bufexplorer
-vim.keymap.set('n', '<leader>ee', ':BufExplorer<CR>')
-vim.keymap.set('n', '<leader>es', ':BufExplorerHorizontalSplit<CR>')
-vim.keymap.set('n', '<leader>ev', ':BufExplorerVerticalSplit<CR>')
+vim.keymap.set('n', '<leader>ee', ':BufExplorer<CR>', { desc = 'open buffer exploerer' })
+vim.keymap.set('n', '<leader>es', ':BufExplorerHorizontalSplit<CR>', { desc = 'open buffer explorer inside a horizontal split' })
+vim.keymap.set('n', '<leader>ev', ':BufExplorerVerticalSplit<CR>', { desc = 'open buffer explorer inside a vertical split' })
 
 -- aerial
 require('aerial').setup({
@@ -329,12 +336,13 @@ require('aerial').setup({
     close_automatic_events = {'unfocus', 'switch_buffer', 'unsupported'},
     on_attach = function(bufnr)
         -- Jump forwards/backwards with '{' and '}'
-        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr})
-        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr})
+        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr, desc = 'previous outliner item'})
+        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr, desc = 'next outliner item'})
     end
 })
 
 vim.keymap.set('n', '<F8>', ':AerialToggle<CR>')
+vim.keymap.set('n', '<leader>at', ':AerialToggle<CR>', { desc = 'togger outliner' })
 
 -- minimap
 MiniMap = require("mini.map")
@@ -347,16 +355,16 @@ MiniMap.setup({
     },
 })
 
-vim.keymap.set('n', '<Leader>mc', MiniMap.close)
-vim.keymap.set('n', '<Leader>mf', MiniMap.toggle_focus)
-vim.keymap.set('n', '<Leader>mo', MiniMap.open)
-vim.keymap.set('n', '<Leader>mr', MiniMap.refresh)
-vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side)
-vim.keymap.set('n', '<Leader>mt', MiniMap.toggle)
+vim.keymap.set('n', '<Leader>mc', MiniMap.close, { desc = 'MiniMap close' })
+vim.keymap.set('n', '<Leader>mf', MiniMap.toggle_focus, { desc = 'MiniMap toggle focus' })
+vim.keymap.set('n', '<Leader>mo', MiniMap.open, { desc = 'MiniMap open' })
+vim.keymap.set('n', '<Leader>mr', MiniMap.refresh, { desc = 'MiniMap refresh' })
+vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side, { desc = 'MiniMap toggle side' })
+vim.keymap.set('n', '<Leader>mt', MiniMap.toggle, { desc = 'MiniMap toggle' })
 
 -- sideways.vim
-vim.keymap.set('n', '<M-h>', ':SidewaysLeft<CR>')
-vim.keymap.set('n', '<M-l>', ':SidewaysRight<CR>')
+vim.keymap.set('n', '<M-h>', ':SidewaysLeft<CR>', { desc = 'move argument left' })
+vim.keymap.set('n', '<M-l>', ':SidewaysRight<CR>', { desc = 'move argument right' })
 
 -- vim-filtering
 vim.cmd([[
@@ -366,30 +374,29 @@ function! FilterUserInput()
     call obj.run()
 endfunction
 ]])
-vim.keymap.set('n', ',F', ':call FilterUserInput()<CR>')
-vim.keymap.set('n', ',v', ":call FilteringNew().addToParameter('alt', expand(\"<cword>\")).run()<CR>")
---vim.keymap.set('n', ',F', ":call FilteringNew().addToParameter('alt', @/).run()<CR>")
---vim.keymap.set('n', ',g', ':call FilteringGetForSource().return()<CR>')
+vim.keymap.set('n', ',F', ':call FilterUserInput()<CR>', { desc = 'filter lines'})
+vim.keymap.set('n', ',v', ":call FilteringNew().addToParameter('alt', expand(\"<cword>\")).run()<CR>",
+    { desc = 'filter lines that contain word under cursor' })
 
 -- telescope
 local telescope = require('telescope.builtin')
-vim.keymap.set('n', ',ff', telescope.find_files, {})
-vim.keymap.set('n', '<C-p>', telescope.find_files, {}) -- muscle memory from years of using ctrlp plugin
-vim.keymap.set('n', ',fg', telescope.live_grep, {})
-vim.keymap.set('n', ',fb', telescope.buffers, {})
-vim.keymap.set('n', ',fh', telescope.help_tags, {})
-vim.keymap.set('n', ',fB', telescope.git_bcommits, {})
-vim.keymap.set('n', ',fC', telescope.git_commits, {})
-vim.keymap.set('n', ',fM', telescope.marks, {})
-vim.keymap.set('n', ',fm', telescope.keymaps, {})
+vim.keymap.set('n', ',ff', telescope.find_files, { desc = 'telescope find files' })
+vim.keymap.set('n', '<C-p>', telescope.find_files, { desc = 'telescope find files' }) -- muscle memory from years of using ctrlp plugin
+vim.keymap.set('n', ',fg', telescope.live_grep, { desc = 'telescope live grep' })
+vim.keymap.set('n', ',fb', telescope.buffers, { desc = 'telescope buffers' })
+vim.keymap.set('n', ',fh', telescope.help_tags, { desc = 'telescope help tags' })
+vim.keymap.set('n', ',fB', telescope.git_bcommits, { desc = 'telescope git commits for current buffer' })
+vim.keymap.set('n', ',fC', telescope.git_commits, { desc = 'telescope git commits for working directory' })
+vim.keymap.set('n', ',fM', telescope.marks, { desc = 'telescope marks' })
+vim.keymap.set('n', ',fm', telescope.keymaps, { desc = 'telescope key maps' })
 
-vim.keymap.set('n', ',fi', telescope.lsp_incoming_calls, {})
-vim.keymap.set('n', ',fo', telescope.lsp_outgoing_calls, {})
-vim.keymap.set('n', ',fd', telescope.lsp_definitions, {})
-vim.keymap.set('n', ',fs', telescope.lsp_dynamic_workspace_symbols, {})
-vim.keymap.set('n', ',fr', telescope.lsp_references, {})
-vim.keymap.set('n', ',fI', telescope.lsp_implementations, {})
-vim.keymap.set('n', ',fD', telescope.diagnostics, {})
+vim.keymap.set('n', ',fi', telescope.lsp_incoming_calls, { desc = 'telescope LSP incomming calls' })
+vim.keymap.set('n', ',fo', telescope.lsp_outgoing_calls, { desc = 'telescope LSP outgoing calls' })
+vim.keymap.set('n', ',fd', telescope.lsp_definitions, {desc = 'telescope LSP definitions' })
+vim.keymap.set('n', ',fs', telescope.lsp_dynamic_workspace_symbols, { desc = 'telescope LSP dynamic workspace symbols' })
+vim.keymap.set('n', ',fr', telescope.lsp_references, { desc = 'telescope LSP references' })
+vim.keymap.set('n', ',fI', telescope.lsp_implementations, { desc = 'telescope LSP implementations' })
+vim.keymap.set('n', ',fD', telescope.diagnostics, { desc = 'telescope diagnostics' })
 
 -- treesitter
 require('nvim-treesitter.configs').setup({
@@ -428,17 +435,20 @@ require('nvim-surround').setup()
 require('dapconfig')
 
 -- centerpad
-vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>', { silent = true, noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>',
+    { silent = true, noremap = true, desc = 'toggle center window with 100 column margin' })
 
--- reflow that ignores formatprg. This is needed to be able to format Go comments.
--- for go, formatprg=gofmt. This is needed to ensure that code gets formatted properly,
--- unformatunately gofmt does not allow specifying comment width (by design, it does not
--- enforce comment length).
-vim.keymap.set("n", "gw", function()
-    local save = vim.opt_local.formatprg or ""
-    vim.opt_local.formatprg = ""
-    vim.cmd('normal! gq')
-    vim.opt_local.formatprg = save
-end, { buffer = true })
+-- which-key
+local wk = require('which-key')
+wk.add({
+    {'<leader>a', group = 'outliner (Aerial)'},
+    {'<leader>b', group = 'buffer explorer'},
+    {'<leader>c', group = 'comments'},
+    {'<leader>d', group = 'debugger (mostly)'},
+    {'<leader>m', group = 'MiniMap'},
+    {',f', group = 'telescope'},
+    {'{', desc = 'previous outliner item'},
+    {'}', desc = 'next outliner item'},
+})
 
 --- vim:set et sts=4 sw=4:
