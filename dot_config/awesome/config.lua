@@ -1,8 +1,5 @@
--- {{{
 local awful = require("awful")
 local gears = require("gears")
-local modkey = modkey ---@diagnostic disable-line:undefined-global
--- }}}
 ------------------------------------------------------------------------------
 --
 -- environment-specific configuration
@@ -35,7 +32,7 @@ local fs_mounts = {
 
 -- {{{ applications
 -- terminal application
-local terminal = "kitty"
+local terminal = "wezterm"
 
 -- editor application
 local editor = os.getenv("EDITOR") or "nvim"
@@ -181,11 +178,11 @@ local right_screen_veritical = {
 --   where <S> is the shortcut letter associated with the screen.
 --
 --   In order to avoid getting errors, all four screens should be assigned a
---   config. If the actual setup does not correspond to the expected layout,
---   config for one of the exiting screens should be re-used for the missing
---   ones. E.g. on a two screen setup, where the right screen is the one that
---   is mainly used, "main", "right", and "aux" entries below might be assigned
---   to the same config.
+--   config. If the actual setup does not correspond to the existing layout,
+--   config for one of the existing screens should be re-used instead of the
+--   missing ones. E.g. on a two screen setup, where the right screen is the
+--   one that is mainly used, "main", "right", and "aux" entries below might
+--   be assigned to the same config.
 --
 local screens = {
     main  = main_screen,
@@ -226,7 +223,9 @@ local rules = {
 -- }}}
 
 -- {{{ global keys
-local globalkeys = gears.table.join(
+---@diagnostic disable-next-line: lowercase-global
+globalkeys = gears.table.join(
+    ---@diagnostic disable-next-line: undefined-global
     awful.key({ modkey }, "Pause",
         function ()
                 awful.util.spawn_with_shell("/home/setrofim/.local/bin/lockscreen")
@@ -235,7 +234,8 @@ local globalkeys = gears.table.join(
 --- }}}
 
 -- {{{ client keys
-local clientkeys = gears.table.join()
+---@diagnostic disable-next-line: lowercase-global
+clientkeys = gears.table.join()
 -- }}}
 
 -- {{{ applications menu
