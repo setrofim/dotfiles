@@ -430,4 +430,15 @@ require('dapconfig')
 -- centerpad
 vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>', { silent = true, noremap = true })
 
+-- reflow that ignores formatprg. This is needed to be able to format Go comments.
+-- for go, formatprg=gofmt. This is needed to ensure that code gets formatted properly,
+-- unformatunately gofmt does not allow specifying comment width (by design, it does not
+-- enforce comment length).
+vim.keymap.set("n", "gw", function()
+    local save = vim.opt_local.formatprg or ""
+    vim.opt_local.formatprg = ""
+    vim.cmd('normal! gq')
+    vim.opt_local.formatprg = save
+end, { buffer = true })
+
 --- vim:set et sts=4 sw=4:
