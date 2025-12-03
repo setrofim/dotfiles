@@ -48,6 +48,7 @@ require('lazy').setup({
     'AndrewRadev/sideways.vim', -- move function args, etc. around
     'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
     'kylechui/nvim-surround', -- add, remove, and change sourrounding brackets/parents/tags/etc.
+    'smithbm2316/centerpad.nvim', -- center single buffer
 
     -- fuzzy search
     {

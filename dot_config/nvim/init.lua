@@ -380,3 +380,6 @@ require('nvim-surround').setup()
 -- Debug Adapter Protocol (DAP) configuration
 -- should happen after colorscheme loading to ensure correct colors in the UI
 require('dapconfig')
+
+-- centerpad
+vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>', { silent = true, noremap = true })
