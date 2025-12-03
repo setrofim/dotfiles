@@ -178,45 +178,91 @@ cmp.setup.cmdline(':', {
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- lauguage servers
-require('lspconfig').pyright.setup{ capabilities = capabilities }
-require('lspconfig').gopls.setup{ capabilities = capabilities }
-require('lspconfig').rust_analyzer.setup{ capabilities = capabilities }
-require('lspconfig').ccls.setup{ capabilities = capabilities }
-require('lspconfig').bashls.setup{
+vim.lsp.enable("pyright")
+
+vim.lsp.config("gopls", {
+	capabilities = capabilities,
+	settings = {
+		gopls = {
+			buildFlags = {"-tags=test"},
+		},
+	},
+})
+vim.lsp.enable("gopls")
+
+vim.lsp.config("rust_analyzer", {
+   capabilities = capabilities,
+   settings = {
+     ['rust-analyzer'] = {
+       cargo = {
+	 allFeatures = true;
+       }
+     }
+   }
+})
+vim.lsp.enable("rust_analyzer")
+
+vim.lsp.enable('ccls')
+
+vim.lsp.config("bashls", {
     capabilities = capabilities,
     filetypes = { "sh", "bash"},
-}
-require('lspconfig').lua_ls.setup{
+})
+vim.lsp.enable("bashls")
+
+vim.lsp.config("lua_ls", {
     capabilities = capabilities,
     on_init = function(client)
-        local path = client.workspace_folders[1].name
-        if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
-            client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
-                Lua = {
-                    runtime = {
-                        -- Tell the language server which version of Lua you're using
-                        -- (most likely LuaJIT in the case of Neovim)
-                        version = 'LuaJIT'
+	if client.workspace_folders then
+	   local path = client.workspace_folders[1].name
+           if
+               path ~= vim.fn.stdpath('config')
+               and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+           then
+               return
+           end
+	end
+        client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
+            Lua = {
+                runtime = {
+                    -- Tell the language server which version of Lua you're using
+                    -- (most likely LuaJIT in the case of Neovim)
+                    version = 'LuaJIT',
+                    -- Tell the language server how to find Lua modules same way as Neovim
+                    -- (see `:h lua-module-load`)
+                    path = {
+                      'lua/?.lua',
+                      'lua/?/init.lua',
                     },
-                    -- Make the server aware of Neovim runtime files
-                    workspace = {
-                        checkThirdParty = false,
-                        library = {
-                            vim.env.VIMRUNTIME
-                            -- "${3rd}/luv/library"
-                            -- "${3rd}/busted/library",
-                        }
-                        -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-                        -- library = vim.api.nvim_get_runtime_file("", true)
+                },
+                -- Make the server aware of Neovim runtime files
+                workspace = {
+                    checkThirdParty = false,
+                    library = {
+                        vim.env.VIMRUNTIME
+                        -- Depending on the usage, you might want to add additional paths
+                        -- here.
+                        -- "${3rd}/luv/library"
+                        -- "${3rd}/busted/library",
                     }
+                -- Or pull in all of 'runtimepath'.
+                -- NOTE: this is a lot slower and will cause issues when working on
+                -- your own configuration.
+                -- See https://github.com/neovim/nvim-lspconfig/issues/3189
+                -- library = {
+                --   vim.api.nvim_get_runtime_file('', true),
+                -- }
                 }
-            })
+            }
+        })
 
-            client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-        end
-        return true
-    end
-}
+        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+    end,
+    settings = {
+        Lua = {}
+    }
+})
+vim.lsp.enable("lua_ls")
 
 -- Use LspAttach autocommand to only map the following keys
 -- after the language server attaches to the current buffer
@@ -383,3 +429,5 @@ require('dapconfig')
 
 -- centerpad
 vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>', { silent = true, noremap = true })
+
+--- vim:set et sts=4 sw=4:
