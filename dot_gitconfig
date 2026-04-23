@@ -8,3 +8,16 @@
 	ui = auto
 [fetch]
 	prune = true
+[init]
+	defaultBranch = main
+[diff "cbor"]
+	wordRegex = "."
+	textconv = xxd -p -c 0
+[alias]
+	wd = diff --word-diff
+	fpush = push --force-with-lease
+	amend = commit --amend --no-edit
+	aliases = config --get-regexp '^alias\\.'
+	amendall = !git add . && git commit --amend --no-edit
+	amend-all = !git add . && git commit --amend --no-edit
+	irom = rebase -i origin/main
