@@ -5,11 +5,10 @@ local dap = require('dap')
 local dapui = require('dapui')
 
 dapui.setup({
-      layouts = {
+  layouts = {
     {
       elements = {
-      -- Elements can be strings or table with id and size keys.
-        "repl",
+        -- Elements can be strings or table with id and size keys.
         "stacks",
         "watches",
         "breakpoints",
@@ -19,6 +18,7 @@ dapui.setup({
     },
     {
       elements = {
+        "repl",
         "console",
         "scopes",
       },
@@ -64,13 +64,22 @@ vim.keymap.set('n', '<leader>dc', require 'dapui'.close, { desc = 'close debugge
 
 vim.fn.sign_define('DapBreakpoint',{ text ='🔴', texthl ='', linehl ='', numhl =''})
 
+vim.keymap.set('n', '<leader>dg', require 'dap'.continue, { desc = 'continue debugger' })
+vim.keymap.set('n', '<leader>dt', require 'dap'.terminate, { desc = 'terminate debugger' })
+vim.keymap.set('n', '<leader>dn', require 'dap'.step_over, { desc = 'debugger step over' })
+vim.keymap.set('n', '<leader>di', require 'dap'.step_into, { desc = 'debugger step into' })
+vim.keymap.set('n', '<leader>dO', require 'dap'.step_out, { desc = 'debugger step out' })
+vim.keymap.set('n', '<leader>db', require 'dap'.toggle_breakpoint, { desc = 'toggle breakpoint' })
+vim.keymap.set('n', '<leader>dC', require 'dap'.clear_breakpoints, { desc = 'clear breakpoints' })
+
+-- legacy non <leader>d alternatives
 vim.keymap.set('n', '<F5>', require 'dap'.continue, { desc = 'continue debugger' })
 vim.keymap.set('n', '<F6>', require 'dap'.terminate, { desc = 'terminate debugger' })
-vim.keymap.set('n', '<F10>', require 'dap'.step_over, { desc = 'debugger step over' })
-vim.keymap.set('n', '<F11>', require 'dap'.step_into, { desc = 'debugger step into' })
-vim.keymap.set('n', '<F12>', require 'dap'.step_out, { desc = 'debugger step out' })
-vim.keymap.set('n', '<leader>b', require 'dap'.toggle_breakpoint, { desc = 'toggle breakpoint' })
-vim.keymap.set('n', '<leader>cb', require 'dap'.clear_breakpoints,{ desc = 'clear breakpoint' })
+vim.keymap.set('n', '<F9>', require 'dap'.step_over, { desc = 'debugger step over' })
+vim.keymap.set('n', '<F10>', require 'dap'.step_into, { desc = 'debugger step into' })
+vim.keymap.set('n', '<F11>', require 'dap'.step_out, { desc = 'debugger step out' })
+vim.keymap.set('n', '<leader>bb', require 'dap'.toggle_breakpoint, { desc = 'toggle breakpoint' })
+vim.keymap.set('n', '<leader>cb', require 'dap'.clear_breakpoints,{ desc = 'clear breakpoints' })
 
 vim.keymap.set("n", "<leader>di", function()
   dap.repl.open()
@@ -86,7 +95,27 @@ end, { desc = 'debugger repl visual selection' })
 require('dap-python').setup('python')
 
 -- Go
-require('dap-go').setup()
+require('dap-go').setup({
+  dap_configurations = {
+    {
+      type = "go",
+      name = "Test (Build Flags)",
+      request = "launch",
+      mode = "test",
+      program = "./${relativeFileDirname}",
+      buildFlags = require('dap-go').get_build_flags,
+    },
+    {
+      type = "go",
+      name = "Test (Build Flags & Arguments)",
+      request = "launch",
+      mode = "test",
+      program = "./${relativeFileDirname}",
+      args = require('dap-go').get_arguments,
+      buildFlags = require('dap-go').get_build_flags,
+    },
+  },
+})
 
 -- Rust
 dap.adapters.lldb = {
@@ -164,4 +193,4 @@ dap.configurations.rust = {
 --per-project config
 require('nvim-dap-projects').search_project_config()
 
--- vim: set et sts=4  sw=4:
+-- vim: set et sts=2  sw=2:

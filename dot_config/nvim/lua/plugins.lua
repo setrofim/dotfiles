@@ -50,6 +50,11 @@ require('lazy').setup({
     'kylechui/nvim-surround',        -- add, remove, and change sourrounding brackets/parents/tags/etc.
     'smithbm2316/centerpad.nvim',    -- center single buffer
 
+    {
+        "fasterius/simple-zoom.nvim",
+        config = true,
+    },
+
     -- some additional icons (used by which-key)
     {
         'nvim-mini/mini.nvim',

@@ -120,6 +120,10 @@ vim.g['airline_powerline_fonts']= 1
 
 require('plugins')
 
+-- zoom
+vim.keymap.set('n', '<leader>z', ':SimpleZoomToggle<CR>',
+    { desc = 'toggle window zoom' })
+
 -- autocompletion / cmp (needs to happend before lsp setup -- see capabilities below
 local cmp = require('cmp')
 
@@ -435,20 +439,23 @@ require('nvim-surround').setup()
 require('dapconfig')
 
 -- centerpad
-vim.api.nvim_set_keymap('n', '<leader>z', '<cmd>Centerpad 100<cr>',
+vim.api.nvim_set_keymap('n', '<leader>.', '<cmd>Centerpad 100<cr>',
     { silent = true, noremap = true, desc = 'toggle center window with 100 column margin' })
 
 -- which-key
 local wk = require('which-key')
 wk.add({
-    {'<leader>a', group = 'outliner (Aerial)'},
-    {'<leader>b', group = 'buffer explorer'},
-    {'<leader>c', group = 'comments'},
-    {'<leader>d', group = 'debugger (mostly)'},
-    {'<leader>m', group = 'MiniMap'},
-    {',f', group = 'telescope'},
-    {'{', desc = 'previous outliner item'},
-    {'}', desc = 'next outliner item'},
+    { '<leader>a',  group = 'outliner (Aerial)' },
+    { '<leader>b',  group = 'buffer explorer' },
+    { '<leader>c',  group = 'comments' },
+    { '<leader>d',  group = 'debugger (mostly)' },
+    { '<leader>dc', desc = 'close debugger UI' },
+    { '<leader>di', desc = 'debugger repl' },
+    { '<leader>do', desc = 'open debugger UI' },
+    { '<leader>m',  group = 'MiniMap' },
+    { ',f',         group = 'telescope' },
+    { '{',          desc = 'previous outliner item' },
+    { '}',          desc = 'next outliner item' },
 })
 
 --- vim:set et sts=4 sw=4:
