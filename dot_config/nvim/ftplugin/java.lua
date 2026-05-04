@@ -1,3 +1,8 @@
+---@diagnostic disable-next-line: undefined-global
+local vim = vim
+
+vim.treesitter.start()
+
 -- see: https://sookocheff.com/post/vim/neovim-java-ide/
 local home = os.getenv('HOME')
 local jdtls = require('jdtls')

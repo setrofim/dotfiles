@@ -14,6 +14,13 @@ vim.o.encoding = 'UTF-8'
 vim.opt.wildmode = {'longest', 'list', 'full'}
 vim.opt.wildmenu = true
 
+-- disable some providers that require extra setup and that I don't care about
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+
+-- make checkhealth happy
+vim.filetype.add({extension={gotmpl="gotmpl"}})
+
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
@@ -118,7 +125,7 @@ vim.g['airline#extensions#tabline#enabled'] = 1
 vim.g['airline#extensions#whitespace#enabled'] = 1
 vim.g['airline_powerline_fonts']= 1
 
-require('plugins')
+require('config.lazy')
 
 -- zoom
 vim.keymap.set('n', '<leader>z', ':SimpleZoomToggle<CR>',
@@ -268,7 +275,7 @@ vim.lsp.config("lua_ls", {
             }
         })
 
-        client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+        client:notify("workspace/didChangeConfiguration", { settings = client.config.settings })
     end,
     settings = {
         Lua = {}
@@ -402,41 +409,17 @@ vim.keymap.set('n', ',fr', telescope.lsp_references, { desc = 'telescope LSP ref
 vim.keymap.set('n', ',fI', telescope.lsp_implementations, { desc = 'telescope LSP implementations' })
 vim.keymap.set('n', ',fD', telescope.diagnostics, { desc = 'telescope diagnostics' })
 
--- treesitter
-require('nvim-treesitter.configs').setup({
-    -- A directory to install the parsers into.
-    -- If this is excluded or nil parsers are installed
-    -- to either the package dir, or the "site" dir.
-    -- If a custom path is used (not nil) it must be added to the runtimepath.
-    parser_install_dir = "~/.cache/treesitter",
-
-    -- A list of parser names, or "all"
-    -- ensure_installed = { "c", "java", "kotlin", "lua", "go", "python", "rust" },
-
-    -- Install parsers synchronously (only applied to `ensure_installed`)
-    sync_install = false,
-
-    -- Automatically install missing parsers when entering buffer
-    auto_install = true,
-
-    highlight = {
-        -- `false` will disable the whole extension
-        enable = true,
-
-        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-        -- Using this option may slow down your editor, and you may see some duplicate highlights.
-        -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = false,
-    },
+-- TreeSitter
+require('nvim-treesitter').setup({
+    install_dir = vim.fn.stdpath('data') .. '/site',
 })
-vim.opt.runtimepath:append("~/.cache/treesitter")
+require('nvim-treesitter').install({ "c", "java", "kotlin", "lua", "go", "python", "rust", "markdown" })
 
 require('nvim-surround').setup()
 
 -- Debug Adapter Protocol (DAP) configuration
 -- should happen after colorscheme loading to ensure correct colors in the UI
-require('dapconfig')
+require('config.dap')
 
 -- centerpad
 vim.api.nvim_set_keymap('n', '<leader>.', '<cmd>Centerpad 100<cr>',

@@ -6,3 +6,5 @@ vim.keymap.set('n', '<F7>', 'Oimport ipdb; ipdb.set_trace()  # XXX<Esc>')
 -- to work (possible term issue?)
 vim.keymap.set('n', '<F6>', 'oimport ipdb; ipdb.set_trace()  # XXX<Esc>')
 vim.keymap.set('i', '<F7>', 'import ipdb; ipdb.set_trace()  # XXX<Esc>')
+
+vim.treesitter.start()
