@@ -413,17 +413,27 @@ vim.keymap.set('n', ',fD', telescope.diagnostics, { desc = 'telescope diagnostic
 require('nvim-treesitter').setup({
     install_dir = vim.fn.stdpath('data') .. '/site',
 })
+
 require('nvim-treesitter').install({
     "bash",
     "c",
+    "dockerfile",
+    "git_rebase",
     "gitcommit",
     "go",
+    "gomod",
+    "gosum",
+    "gotmpl",
+    "ini",
     "java",
+    "json",
     "kotlin",
     "lua",
     "markdown",
     "python",
     "rust",
+    "toml",
+    "yaml",
 })
 
 require('nvim-surround').setup()
