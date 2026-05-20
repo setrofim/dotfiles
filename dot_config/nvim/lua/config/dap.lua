@@ -9,6 +9,7 @@ dapui.setup({
     {
       elements = {
         -- Elements can be strings or table with id and size keys.
+        "repl",
         "stacks",
         "watches",
         "breakpoints",
@@ -18,7 +19,6 @@ dapui.setup({
     },
     {
       elements = {
-        "repl",
         "console",
         "scopes",
       },

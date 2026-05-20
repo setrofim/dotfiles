@@ -97,6 +97,13 @@ return {
     build = ':TSUpdate',
   },
 
+  {
+    'nvim-treesitter/nvim-treesitter-context',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
+
   -- autocompletion
   'neovim/nvim-lspconfig',
   'hrsh7th/cmp-nvim-lsp',

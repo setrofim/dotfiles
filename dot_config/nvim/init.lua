@@ -21,6 +21,9 @@ vim.g.loaded_ruby_provider = 0
 -- make checkhealth happy
 vim.filetype.add({extension={gotmpl="gotmpl"}})
 
+-- will be setting up a different map below
+vim.g.bufExplorerDisableDefaultKeyMapping = 1
+
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
@@ -73,7 +76,7 @@ vim.keymap.set('n', '<F3>', 'a<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR><Esc>')
 vim.keymap.set('i', '<F3>', '<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR>')
 
 -- remove all trailing whitespace
-vim.keymap.set('n', '<leader>dt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]],
+vim.keymap.set('n', '<leader>rt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]],
     { desc = 'delete trailing whitespace (buffer-wide)' })
 
 -- highlight trailing whitespace
@@ -337,8 +340,9 @@ vim.keymap.set('n', '<leader>f', ':silent RangerEdit<CR>', { desc = 'open file b
 
 
 -- bufexplorer
-vim.keymap.set('n', '<leader>ee', ':BufExplorer<CR>', { desc = 'open buffer exploerer' })
+vim.keymap.set('n', '<leader>ee', ':BufExplorer<CR>', { desc = 'open buffer explorer' })
 vim.keymap.set('n', '<leader>es', ':BufExplorerHorizontalSplit<CR>', { desc = 'open buffer explorer inside a horizontal split' })
+vim.keymap.set('n', '<leader>et', ':ToggleBufExplorer<CR>', { desc = 'toggle buffer explorer' })
 vim.keymap.set('n', '<leader>ev', ':BufExplorerVerticalSplit<CR>', { desc = 'open buffer explorer inside a vertical split' })
 
 -- aerial
@@ -353,7 +357,11 @@ require('aerial').setup({
 })
 
 vim.keymap.set('n', '<F8>', ':AerialToggle<CR>')
-vim.keymap.set('n', '<leader>at', ':AerialToggle<CR>', { desc = 'togger outliner' })
+vim.keymap.set('n', '<leader>ta', ':AerialToggle<CR>', { desc = 'toggle outliner' })
+vim.keymap.set('n', '<leader>tb', ':ToggleBufExplorer<CR>', { desc = 'toggle buffer explorer' })
+vim.keymap.set('n', '<leader>tc', ':TSContext toggle<CR>', { desc = 'toggle context' })
+vim.keymap.set('n', '<leader>tz', ':SimpleZoomToggle<CR>', { desc = 'toggle window zoom' })
+vim.keymap.set('n', '<leader>tp', ':Centerpad 100<CR>', { desc = 'toggle centerpad' })
 
 -- minimap
 MiniMap = require("mini.map")
@@ -456,7 +464,10 @@ wk.add({
     { '<leader>dc', desc = 'close debugger UI' },
     { '<leader>di', desc = 'debugger repl' },
     { '<leader>do', desc = 'open debugger UI' },
+    { '<leader>e',  group = 'buffer explorer' },
     { '<leader>m',  group = 'MiniMap' },
+    { '<leader>r',  group = 'rubout' },
+    { '<leader>t',  group = 'toggle' },
     { ',f',         group = 'telescope' },
     { '{',          desc = 'previous outliner item' },
     { '}',          desc = 'next outliner item' },
