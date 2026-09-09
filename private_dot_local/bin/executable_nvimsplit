@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# This script opens NeoVim with three vertical splits, populating each with
+# contents of the files specified by the arguments. If few than three files
+# are specified, the remaining splits have an empty buffer instead. If there
+# are more than three files, the remaining files are opened in background
+# buffers.
+import os
+import sys
+import shlex
+
+args = sys.argv[1:]
+if len(args) == 0:
+    cmd = 'nvim "+vsplit | vsplit | wincmd ="'
+elif len(args) == 1:
+    f1 = args[0]
+    cmd = f'nvim "{f1}" "+vsplit | vsplit | wincmd ="'
+elif len(args) == 2:
+    f1, f2 = args
+    cmd = f'nvim -O "{f1}" "{f2}" "+vsplit | wincmd ="'
+elif len(args) == 3:
+    f1, f2, f3 = args
+    cmd = f'nvim -O "{f1}" "{f2}" "{f3}" "+wincmd ="'
+else:
+    f1, f2, f3 = args[:3]
+    badds = ' | '.join(f'badd "{f}"' for f in args[3:])
+    cmd = f'nvim -O "{f1}" "{f2}" "{f3}" "+{badds} | wincmd ="'
+
+args = shlex.split(cmd)
+os.execvp(args[0], args)
