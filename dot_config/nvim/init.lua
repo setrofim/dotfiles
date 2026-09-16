@@ -209,6 +209,11 @@ vim.lsp.config("gopls", {
 			buildFlags = {"-tags=test"},
 		},
 	},
+        on_attach = function(client, _)
+          -- disable semantic tokens as we're using TreeSitter, and that
+          -- does a way better job.
+          client.server_capabilities.semanticTokensProvider = nil
+        end
 })
 vim.lsp.enable("gopls")
 
