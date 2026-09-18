@@ -24,6 +24,11 @@ vim.filetype.add({extension={gotmpl="gotmpl"}})
 -- will be setting up a different map below
 vim.g.bufExplorerDisableDefaultKeyMapping = 1
 
+-- whitespace highlighing and stripping
+vim.g.better_whitespace_enabled = 1
+vim.g.better_whitespace_ctermcolor = 'darkred'
+vim.g.better_whitespace_guicolor = 'darkred'
+
 -- General keymaps
 vim.g.C_Ctrl_j = 'off'
 
@@ -76,19 +81,15 @@ vim.keymap.set('n', '<F3>', 'a<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR><Esc>')
 vim.keymap.set('i', '<F3>', '<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR>')
 
 -- remove all trailing whitespace
-vim.keymap.set('n', '<leader>rt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]],
+vim.keymap.set('n', '<leader>rt', ':StripWhitespace<CR>',
     { desc = 'delete trailing whitespace (buffer-wide)' })
 
+-- format current buffer
 vim.keymap.set('n', '<leader>g', function()
-  vim.lsp.buf.format({ async = false })
+    vim.lsp.buf.format({ async = false })
 end, { desc = 'format current buffer via LSP' })
 
--- highlight trailing whitespace
-vim.cmd([[
-highlight Trail ctermbg=black guibg=darkred
-call matchadd('Trail', '\s\+$', 100)
-]])
-
+-- additional extensions for filetype's
 local ft_maps = {
     {{'*dts', '*dtsi'}, 'set filetype=dts'},
     {{'*docker'}, 'set filetype=dockerfile'},

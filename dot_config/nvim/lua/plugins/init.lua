@@ -1,9 +1,6 @@
 -- see:
 --    https://github.com/folke/lazy.nvim
 --
----@diagnostic disable-next-line: undefined-global
-local vim = vim
-
 return {
   -- debug
   {
@@ -34,6 +31,7 @@ return {
   'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
   'kylechui/nvim-surround',        -- add, remove, and change sourrounding brackets/parents/tags/etc.
   'smithbm2316/centerpad.nvim',    -- center single buffer
+  'ntpeters/vim-better-whitespace', -- trailing whitespace highlighting and deletion
 
   {
     "fasterius/simple-zoom.nvim",
@@ -105,7 +103,6 @@ return {
   },
 
   -- autocompletion
-  'neovim/nvim-lspconfig',
   'hrsh7th/cmp-nvim-lsp',
   'hrsh7th/cmp-buffer',
   'hrsh7th/cmp-path',
