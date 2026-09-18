@@ -79,6 +79,10 @@ vim.keymap.set('i', '<F3>', '<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR>')
 vim.keymap.set('n', '<leader>rt', [[:let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>]],
     { desc = 'delete trailing whitespace (buffer-wide)' })
 
+vim.keymap.set('n', '<leader>g', function()
+  vim.lsp.buf.format({ async = false })
+end, { desc = 'format current buffer via LSP' })
+
 -- highlight trailing whitespace
 vim.cmd([[
 highlight Trail ctermbg=black guibg=darkred
