@@ -8,9 +8,9 @@ alias df='df -h'
 alias du='du -h'
 alias halt='sudo halt'
 alias open='xdg-open'
-alias tmux='tmux -2'
 alias dict=sdcv
 alias vim=nvim
+alias vi='nvim -u /dev/null'
 alias cat=bat
 alias xclipb='xclip -selection clipboard'
 alias setxkb='setxkbmap gb -option ctrl:swapcaps'
@@ -28,10 +28,16 @@ alias jwt="step-cli crypto jwt"
 alias marp="marp --config ~/.config/marp.config.js"
 alias mutt=neomutt
 alias mail="mutt -F ~/.config/neomutt/proton-muttrc"
+alias yt-dlp="/usr/bin/yt-dlp --remote-components ejs:github  --cookies-from-browser brave"
+alias mnamer="/home/setrofim/.local/bin/mnamer --no-overwrite"
+alias vim='bash -c "echo -e \"\033[1;31mNO!\033[0m\""'
+alias gotest='go test -tags=test'
 
 # https://twitter.com/thingskatedid/status/1316074032379248640
 alias isvg='rsvg-convert | icat'
 alias icat='kitty icat --align=left'
+
+alias name-tab="wezterm cli set-tab-title"
 
 
 # ^Q (along with a few other chords) is intercepted by stty, preventing it from
@@ -49,6 +55,12 @@ function weather {
     else
         curl wttr.in/Cambridge?M
     fi
+}
+
+function bashcolors() {
+	for code in {0..255}
+		do echo -e "\e[38;5;${code}m"'\\e[38;5;'"${code}m\e[0m"
+	done
 }
 
 function parse_git_branch {
@@ -71,21 +83,25 @@ function __map_darkbg_visible() {
     local offset=8
 
     if [[ $i -lt 16 ]]; then
+        # shellcheck disable=2004
         echo $((1 + ($i % 15 / 2)))
     else
+        # shellcheck disable=2004,2116
         j=$(echo $(( ($i - 15) / 36 )))
 
         # The last secition is the greys, and we want color!
         if [[ $j -gt 5 ]]; then
+            # shellcheck disable=2004,2116
             j=$(echo $(( $j - 5 )))
         fi
 
+        # shellcheck disable=2004
         echo $(( $j*36 + 15 + $offset + ($i - 15) % (36 - $offset*2) ))
     fi
 }
 
 function __hostcolor() {
-    printf "\x1b[38;5;%dm" $(__map_darkbg_visible $(__hosthash))
+    printf "\x1b[38;5;%dm" "$(__map_darkbg_visible "$(__hosthash)")"
 }
 
 function _prompt_command {
@@ -101,6 +117,7 @@ function _prompt_command {
         local magen='\[\033[1;35m\]'
         local white='\[\033[1;8m\]'
 
+        # shellcheck disable=2155
         local host="$(__hostcolor)"
     elif [[ $COLORS -ge 8 ]]; then
         local purp='\e[1;34m'
@@ -110,6 +127,7 @@ function _prompt_command {
         local green='\e[0;32m'
         local blue='\e[0;34m'
         local magen='\e[0;35m'
+        # shellcheck disable=2034
         local white='\e[0;37m'
 
         local host="$green"
@@ -127,10 +145,9 @@ function _prompt_command {
 
     local venv=""
     if [[ "$VIRTUAL_ENV_PROMPT" != "" ]]; then
-	    venv+="${blue}${VIRTUAL_ENV_PROMPT% }${purp}"
+	    venv+="${blue}(${VIRTUAL_ENV_PROMPT% })${purp}"
     fi
 
-    echo $prompt
     if [[ $COLORS -ge 8 ]]; then
         PS1="${purp}┌─┤${yell}\D{%Y-%m-%dT%H:%M:%S}${purp}├─┤${who}\u${reset}${purp}@${host}\h${purp}├─┤${blue}\w${purp}"
         if [[ $branch != "" ]]; then
@@ -149,7 +166,7 @@ function _prompt_command {
 export PROMPT_COMMAND=_prompt_command
 export PROMPT_DIRTRIM=4
 
-export BROWSER=qbnew
+export BROWSER=/usr/bin/brave
 export EDITOR=nvim
 
 export PATH=$PATH:$HOME/go/bin
@@ -157,17 +174,19 @@ export PATH=$PATH:$HOME/.gem/ruby/2.3.0/bin
 export PATH=$PATH:$HOME/.gem/ruby/2.7.0/bin
 export PATH=$PATH:$HOME/.cargo/bin
 export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.local/share/gem/ruby/3.4.0/bin
 
 export OPENAUDIBLE_HOME=$HOME/dopamine/audible/
 
 export JUPYTERLAB_DIR=$HOME/.local/share/jupyter/lab
 
 export QT_QPA_PLATFORMTHEME=qt5ct
-export QT_STYLE_OVERRIDE=qt5ct-style
 
-export PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
+PYTHON_SITE_PACKAGES=$(/usr/bin/python -c "import site; print('\n'.join(site.getsitepackages()))" | head -n 1 | tr -d '\n')
+export PYTHON_SITE_PACKAGES
 
-export MAKEFLAGS=-j$(nproc)
+MAKEFLAGS=-j$(nproc)
+export MAKEFLAGS
 
 export MANWIDTH=100
 
@@ -176,13 +195,13 @@ eval "$(dircolors ~/.config/dircolors)"
 # Colored man pages
 man() {
     env \
-        LESS_TERMCAP_mb=$(printf "\e[1;34m") \
-        LESS_TERMCAP_md=$(printf "\e[1;34m") \
-        LESS_TERMCAP_me=$(printf "\e[0m") \
-        LESS_TERMCAP_se=$(printf "\e[0m") \
-        LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-        LESS_TERMCAP_ue=$(printf "\e[0m") \
-        LESS_TERMCAP_us=$(printf "\e[1;32m") \
+        LESS_TERMCAP_mb="$(printf "\e[1;34m")" \
+        LESS_TERMCAP_md="$(printf "\e[1;34m")" \
+        LESS_TERMCAP_me="$(printf "\e[0m")" \
+        LESS_TERMCAP_se="$(printf "\e[0m")" \
+        LESS_TERMCAP_so="$(printf "\e[1;44;33m")" \
+        LESS_TERMCAP_ue="$(printf "\e[0m")" \
+        LESS_TERMCAP_us="$(printf "\e[1;32m")" \
             man "$@"
 }
 
@@ -198,19 +217,35 @@ if [[ "$(which archey3)" != "" ]]; then
     archey3
 fi
 
+# Node package maanger
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Kitty shell integration.
-if test -n "$KITTY_INSTALLATION_DIR" -a -e "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"; then
-    source "$KITTY_INSTALLATION_DIR/shell-integration/bash/kitty.bash"
-fi
+# note: nvm can take a few seconds to actually load, so defer the cost until we
+# actually need it (rarely) rather than incurring it every time on a new shell.
+lazy_load_nvm() {
+    unset -f nvm node npm npx
+    # shellcheck disable=SC1091
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+    # shellcheck disable=SC1091
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+}
+
+nvm() { lazy_load_nvm; nvm "$@"; }
+node() { lazy_load_nvm; node "$@"; }
+npm()  { lazy_load_nvm; npm "$@"; }
+npx()  { lazy_load_nvm; npx "$@"; }
 
 if [[ -d ~/.bashrc.d ]]; then
-    for f in $(ls ~/.bashrc.d); do
-        source ~/.bashrc.d/$f
+    for f in ~/.bashrc.d/*; do
+	# shellcheck source=/dev/null
+        source "$f"
     done
 fi
 
-# vim: set ft=bash :
+. "$HOME/.limbo/env"
+
+# Java SDK manager
+export SDKMAN_DIR="/home/setrofim/.sdkman"
+[[ -s "/home/setrofim/.sdkman/bin/sdkman-init.sh" ]] && source "/home/setrofim/.sdkman/bin/sdkman-init.sh"
+
+# vim: set ft=bash sts=4 sw=4 et:
