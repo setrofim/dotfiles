@@ -83,6 +83,8 @@ vim.keymap.set('i', '<F3>', '<C-R>=strftime("%Y-%m-%d %a %H:%M ")<CR>')
 -- remove all trailing whitespace
 vim.keymap.set('n', '<leader>rt', ':StripWhitespace<CR>',
     { desc = 'delete trailing whitespace (buffer-wide)' })
+vim.keymap.set('n', '<leader>tt', ':ToggleWhitespace<CR>',
+    { desc = 'toggle trailing whitespace highlighting' })
 
 -- format current buffer
 vim.keymap.set('n', '<leader>g', function()
