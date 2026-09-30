@@ -25,7 +25,6 @@ return {
   'echasnovski/mini.map',          -- mini map (buffer text overview)
   'tpope/vim-fugitive',            -- git integration
   'scrooloose/nerdcommenter',      -- code commenting
-  'nielsadb/vim-filtering',        -- filter lines in buffer
   'stevearc/aerial.nvim',          -- code outliner (tagbar replacement)
   'AndrewRadev/sideways.vim',      -- move function args, etc. around
   'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)

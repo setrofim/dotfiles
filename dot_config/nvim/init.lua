@@ -11,7 +11,7 @@ vim.o.hidden = true
 vim.o.hlsearch = false
 vim.o.encoding = 'UTF-8'
 
-vim.opt.wildmode = {'longest', 'list', 'full'}
+vim.opt.wildmode = { 'longest', 'list', 'full' }
 vim.opt.wildmenu = true
 
 -- disable some providers that require extra setup and that I don't care about
@@ -19,7 +19,7 @@ vim.g.loaded_perl_provider = 0
 vim.g.loaded_ruby_provider = 0
 
 -- make checkhealth happy
-vim.filetype.add({extension={gotmpl="gotmpl"}})
+vim.filetype.add({ extension = { gotmpl = "gotmpl" } })
 
 -- will be setting up a different map below
 vim.g.bufExplorerDisableDefaultKeyMapping = 1
@@ -73,6 +73,7 @@ function MapF1()
         vim.cmd('help')
     end
 end
+
 vim.keymap.set('i', '<F1>', '<Esc>') -- I keep hitting this by mistake
 vim.keymap.set('n', '<F1>', ':lua MapF1()<CR>')
 
@@ -93,26 +94,26 @@ end, { desc = 'format current buffer via LSP' })
 
 -- additional extensions for filetype's
 local ft_maps = {
-    {{'*dts', '*dtsi'}, 'set filetype=dts'},
-    {{'*docker'}, 'set filetype=dockerfile'},
-    {{'run.log'}, 'set filetype=walog'},
-    {{'*.weechat'}, 'set filetype=irc'},
-    {{'*.xaml'}, 'set filetype=xml'},
-    {{'*.html'}, 'set filetype=htmljinja'},
-    {{'*.md'}, 'set filetype=markdown'},
-    {{'*.objdump'}, 'set filetype=objdump'},
-    {{'*.sqlite*'}, 'set filetype=sqlite'},
-    {{'*PULLREQ_EDITMSG'}, 'set spell textwidth=80'},
-    {{'*COMMIT_EDITMSG'}, 'set spell textwidth=80'},
-    {{'*.doku'}, 'set filetype=dokuwiki'},
-    {{'*.tmpl'}, 'set filetype=jinja'},
-    {{'*.rst'}, 'set filetype=rrst textwidth=80'},
+    { { '*dts', '*dtsi' },    'set filetype=dts' },
+    { { '*docker' },          'set filetype=dockerfile' },
+    { { 'run.log' },          'set filetype=walog' },
+    { { '*.weechat' },        'set filetype=irc' },
+    { { '*.xaml' },           'set filetype=xml' },
+    { { '*.html' },           'set filetype=htmljinja' },
+    { { '*.md' },             'set filetype=markdown' },
+    { { '*.objdump' },        'set filetype=objdump' },
+    { { '*.sqlite*' },        'set filetype=sqlite' },
+    { { '*PULLREQ_EDITMSG' }, 'set spell textwidth=80' },
+    { { '*COMMIT_EDITMSG' },  'set spell textwidth=80' },
+    { { '*.doku' },           'set filetype=dokuwiki' },
+    { { '*.tmpl' },           'set filetype=jinja' },
+    { { '*.rst' },            'set filetype=rrst textwidth=80' },
 }
 
 for _, ftm in ipairs(ft_maps) do
     vim.api.nvim_create_autocmd(
-        {'BufRead', 'BufNewFile'},
-        {pattern = ftm[1], command = ftm[2]}
+        { 'BufRead', 'BufNewFile' },
+        { pattern = ftm[1], command = ftm[2] }
     )
 end
 
@@ -133,7 +134,7 @@ end, { buffer = true, desc = 'reflow without formatprg' })
 -- airline (must be set before laoding plugins)
 vim.g['airline#extensions#tabline#enabled'] = 1
 vim.g['airline#extensions#whitespace#enabled'] = 1
-vim.g['airline_powerline_fonts']= 1
+vim.g['airline_powerline_fonts'] = 1
 
 require('config.lazy')
 
@@ -210,29 +211,29 @@ local capabilities = require('cmp_nvim_lsp').default_capabilities()
 vim.lsp.enable("pyright")
 
 vim.lsp.config("gopls", {
-	capabilities = capabilities,
-	settings = {
-		gopls = {
-			buildFlags = {"-tags=test"},
-		},
-	},
-        on_attach = function(client, _)
-          -- disable semantic tokens as we're using TreeSitter, and that
-          -- does a way better job.
-          client.server_capabilities.semanticTokensProvider = nil
-        end
+    capabilities = capabilities,
+    settings = {
+        gopls = {
+            buildFlags = { "-tags=test" },
+        },
+    },
+    on_attach = function(client, _)
+        -- disable semantic tokens as we're using TreeSitter, and that
+        -- does a way better job.
+        client.server_capabilities.semanticTokensProvider = nil
+    end
 })
 vim.lsp.enable("gopls")
 
 vim.lsp.config("rust_analyzer", {
-   capabilities = capabilities,
-   settings = {
-     ['rust-analyzer'] = {
-       cargo = {
-	 allFeatures = true;
-       }
-     }
-   }
+    capabilities = capabilities,
+    settings = {
+        ['rust-analyzer'] = {
+            cargo = {
+                allFeatures = true,
+            }
+        }
+    }
 })
 vim.lsp.enable("rust_analyzer")
 
@@ -240,22 +241,22 @@ vim.lsp.enable('ccls')
 
 vim.lsp.config("bashls", {
     capabilities = capabilities,
-    filetypes = { "sh", "bash"},
+    filetypes = { "sh", "bash" },
 })
 vim.lsp.enable("bashls")
 
 vim.lsp.config("lua_ls", {
     capabilities = capabilities,
     on_init = function(client)
-	if client.workspace_folders then
-	   local path = client.workspace_folders[1].name
-           if
-               path ~= vim.fn.stdpath('config')
-               and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
-           then
-               return
-           end
-	end
+        if client.workspace_folders then
+            local path = client.workspace_folders[1].name
+            if
+                path ~= vim.fn.stdpath('config')
+                and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc'))
+            then
+                return
+            end
+        end
         client.config.settings = vim.tbl_deep_extend('force', client.config.settings, {
             Lua = {
                 runtime = {
@@ -265,8 +266,8 @@ vim.lsp.config("lua_ls", {
                     -- Tell the language server how to find Lua modules same way as Neovim
                     -- (see `:h lua-module-load`)
                     path = {
-                      'lua/?.lua',
-                      'lua/?/init.lua',
+                        'lua/?.lua',
+                        'lua/?/init.lua',
                     },
                 },
                 -- Make the server aware of Neovim runtime files
@@ -279,13 +280,13 @@ vim.lsp.config("lua_ls", {
                         -- "${3rd}/luv/library"
                         -- "${3rd}/busted/library",
                     }
-                -- Or pull in all of 'runtimepath'.
-                -- NOTE: this is a lot slower and will cause issues when working on
-                -- your own configuration.
-                -- See https://github.com/neovim/nvim-lspconfig/issues/3189
-                -- library = {
-                --   vim.api.nvim_get_runtime_file('', true),
-                -- }
+                    -- Or pull in all of 'runtimepath'.
+                    -- NOTE: this is a lot slower and will cause issues when working on
+                    -- your own configuration.
+                    -- See https://github.com/neovim/nvim-lspconfig/issues/3189
+                    -- library = {
+                    --   vim.api.nvim_get_runtime_file('', true),
+                    -- }
                 }
             }
         })
@@ -314,8 +315,10 @@ vim.api.nvim_create_autocmd('LspAttach', {
         vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = ev.buf, desc = 'hover' })
         vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = ev.buf, desc = 'go to implmentation' })
         vim.keymap.set('n', '<C-K>', vim.lsp.buf.signature_help, { buffer = ev.buf, desc = 'show signature help' })
-        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, { buffer = ev.buf, desc = 'add workspace folder' })
-        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, { buffer = ev.buf, desc = 'remove workspace folder' })
+        vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder,
+            { buffer = ev.buf, desc = 'add workspace folder' })
+        vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder,
+            { buffer = ev.buf, desc = 'remove workspace folder' })
         vim.keymap.set('n', '<space>wl', function()
             print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
         end, { buffer = ev.buf, desc = 'list workspace folders' })
@@ -353,18 +356,20 @@ vim.keymap.set('n', '<leader>f', ':silent RangerEdit<CR>', { desc = 'open file b
 
 -- bufexplorer
 vim.keymap.set('n', '<leader>ee', ':BufExplorer<CR>', { desc = 'open buffer explorer' })
-vim.keymap.set('n', '<leader>es', ':BufExplorerHorizontalSplit<CR>', { desc = 'open buffer explorer inside a horizontal split' })
+vim.keymap.set('n', '<leader>es', ':BufExplorerHorizontalSplit<CR>',
+    { desc = 'open buffer explorer inside a horizontal split' })
 vim.keymap.set('n', '<leader>et', ':ToggleBufExplorer<CR>', { desc = 'toggle buffer explorer' })
-vim.keymap.set('n', '<leader>ev', ':BufExplorerVerticalSplit<CR>', { desc = 'open buffer explorer inside a vertical split' })
+vim.keymap.set('n', '<leader>ev', ':BufExplorerVerticalSplit<CR>',
+    { desc = 'open buffer explorer inside a vertical split' })
 
 -- aerial
 require('aerial').setup({
     show_guides = true,
-    close_automatic_events = {'unfocus', 'switch_buffer', 'unsupported'},
+    close_automatic_events = { 'unfocus', 'switch_buffer', 'unsupported' },
     on_attach = function(bufnr)
         -- Jump forwards/backwards with '{' and '}'
-        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', {buffer = bufnr, desc = 'previous outliner item'})
-        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', {buffer = bufnr, desc = 'next outliner item'})
+        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr, desc = 'previous outliner item' })
+        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr, desc = 'next outliner item' })
     end
 })
 
@@ -398,16 +403,28 @@ vim.keymap.set('n', '<M-h>', ':SidewaysLeft<CR>', { desc = 'move argument left' 
 vim.keymap.set('n', '<M-l>', ':SidewaysRight<CR>', { desc = 'move argument right' })
 
 -- vim-filtering
-vim.cmd([[
-function! FilterUserInput()
-    let obj =  FilteringNew()
-    call obj.parseQuery(input('>'), '|')
-    call obj.run()
-endfunction
-]])
-vim.keymap.set('n', ',F', ':call FilterUserInput()<CR>', { desc = 'filter lines'})
-vim.keymap.set('n', ',v', ":call FilteringNew().addToParameter('alt', expand(\"<cword>\")).run()<CR>",
-    { desc = 'filter lines that contain word under cursor' })
+vim.keymap.set('n', ',F', function()
+    local pattern = vim.fn.input('Pattern: ')
+    if pattern == '' then return end
+
+    local ok, err = pcall(function()
+        vim.cmd('vimgrep /' .. pattern .. '/g %')
+    end)
+
+    if not ok then
+        -- vimgrep raises E480 when nothing matches; treat that as a normal
+        -- "no results" case rather than a real error
+        ---@diagnostic disable-next-line: need-check-nil
+        if err:match('E480') then
+            vim.notify('No matches for: ' .. pattern, vim.log.levels.INFO)
+        else
+            vim.notify('vimgrep failed: ' .. err, vim.log.levels.ERROR)
+        end
+        return
+    end
+
+    vim.cmd('copen')
+end, { desc = 'grep current buffer into quickfix' })
 
 -- telescope
 local telescope = require('telescope.builtin')
@@ -423,7 +440,7 @@ vim.keymap.set('n', ',fm', telescope.keymaps, { desc = 'telescope key maps' })
 
 vim.keymap.set('n', ',fi', telescope.lsp_incoming_calls, { desc = 'telescope LSP incomming calls' })
 vim.keymap.set('n', ',fo', telescope.lsp_outgoing_calls, { desc = 'telescope LSP outgoing calls' })
-vim.keymap.set('n', ',fd', telescope.lsp_definitions, {desc = 'telescope LSP definitions' })
+vim.keymap.set('n', ',fd', telescope.lsp_definitions, { desc = 'telescope LSP definitions' })
 vim.keymap.set('n', ',fs', telescope.lsp_dynamic_workspace_symbols, { desc = 'telescope LSP dynamic workspace symbols' })
 vim.keymap.set('n', ',fr', telescope.lsp_references, { desc = 'telescope LSP references' })
 vim.keymap.set('n', ',fI', telescope.lsp_implementations, { desc = 'telescope LSP implementations' })
