@@ -373,13 +373,6 @@ require('aerial').setup({
     end
 })
 
-vim.keymap.set('n', '<F8>', ':AerialToggle<CR>')
-vim.keymap.set('n', '<leader>ta', ':AerialToggle<CR>', { desc = 'toggle outliner' })
-vim.keymap.set('n', '<leader>tb', ':ToggleBufExplorer<CR>', { desc = 'toggle buffer explorer' })
-vim.keymap.set('n', '<leader>tc', ':TSContext toggle<CR>', { desc = 'toggle context' })
-vim.keymap.set('n', '<leader>tz', ':SimpleZoomToggle<CR>', { desc = 'toggle window zoom' })
-vim.keymap.set('n', '<leader>tp', ':Centerpad 100<CR>', { desc = 'toggle centerpad' })
-
 -- minimap
 MiniMap = require("mini.map")
 
@@ -397,6 +390,15 @@ vim.keymap.set('n', '<Leader>mo', MiniMap.open, { desc = 'MiniMap open' })
 vim.keymap.set('n', '<Leader>mr', MiniMap.refresh, { desc = 'MiniMap refresh' })
 vim.keymap.set('n', '<Leader>ms', MiniMap.toggle_side, { desc = 'MiniMap toggle side' })
 vim.keymap.set('n', '<Leader>mt', MiniMap.toggle, { desc = 'MiniMap toggle' })
+
+-- toggles
+vim.keymap.set('n', '<F8>', ':AerialToggle<CR>')
+vim.keymap.set('n', '<leader>ta', ':AerialToggle<CR>', { desc = 'toggle outliner' })
+vim.keymap.set('n', '<leader>tb', ':ToggleBufExplorer<CR>', { desc = 'toggle buffer explorer' })
+vim.keymap.set('n', '<leader>tc', ':TSContext toggle<CR>', { desc = 'toggle context' })
+vim.keymap.set('n', '<leader>tz', ':SimpleZoomToggle<CR>', { desc = 'toggle window zoom' })
+vim.keymap.set('n', '<leader>tp', ':Centerpad 100<CR>', { desc = 'toggle centerpad' })
+vim.keymap.set('n', '<Leader>tm', MiniMap.toggle, { desc = 'MiniMap toggle' })
 
 -- sideways.vim
 vim.keymap.set('n', '<M-h>', ':SidewaysLeft<CR>', { desc = 'move argument left' })
