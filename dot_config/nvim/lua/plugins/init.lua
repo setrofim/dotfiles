@@ -16,20 +16,20 @@ return {
   'leoluz/nvim-dap-go',           -- Go debug
 
   -- misc
-  'mfussenegger/nvim-jdtls',       -- java language server
-  'nvim-lua/plenary.nvim',         -- additional lua functions
-  'neovim/nvim-lspconfig',         -- language server configuration
-  'rafaqz/ranger.vim',             -- use ranger as file browser
-  'ellisonleao/gruvbox.nvim',      -- colorscheme
-  'jlanzarotta/bufexplorer',       -- better buffer navigation
-  'echasnovski/mini.map',          -- mini map (buffer text overview)
-  'tpope/vim-fugitive',            -- git integration
-  'scrooloose/nerdcommenter',      -- code commenting
-  'stevearc/aerial.nvim',          -- code outliner (tagbar replacement)
-  'AndrewRadev/sideways.vim',      -- move function args, etc. around
-  'jsborjesson/vim-uppercase-sql', -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
-  'kylechui/nvim-surround',        -- add, remove, and change sourrounding brackets/parents/tags/etc.
-  'smithbm2316/centerpad.nvim',    -- center single buffer
+  'mfussenegger/nvim-jdtls',        -- java language server
+  'nvim-lua/plenary.nvim',          -- additional lua functions
+  'neovim/nvim-lspconfig',          -- language server configuration
+  'rafaqz/ranger.vim',              -- use ranger as file browser
+  'ellisonleao/gruvbox.nvim',       -- colorscheme
+  'jlanzarotta/bufexplorer',        -- better buffer navigation
+  'echasnovski/mini.map',           -- mini map (buffer text overview)
+  'tpope/vim-fugitive',             -- git integration
+  'scrooloose/nerdcommenter',       -- code commenting
+  'stevearc/aerial.nvim',           -- code outliner (tagbar replacement)
+  'AndrewRadev/sideways.vim',       -- move function args, etc. around
+  'jsborjesson/vim-uppercase-sql',  -- auto-cap SQL (*sigh* it's bad that I write enough SQL for this to be useful)
+  'kylechui/nvim-surround',         -- add, remove, and change sourrounding brackets/parents/tags/etc.
+  'smithbm2316/centerpad.nvim',     -- center single buffer
   'ntpeters/vim-better-whitespace', -- trailing whitespace highlighting and deletion
 
   {
