@@ -469,6 +469,7 @@ require('nvim-treesitter').install({
     "kotlin",
     "lua",
     "markdown",
+    "nix",
     "python",
     "rust",
     "toml",
