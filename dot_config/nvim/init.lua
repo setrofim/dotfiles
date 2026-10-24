@@ -506,4 +506,94 @@ wk.add({
     { '}',          desc = 'next outliner item' },
 })
 
+-- context spellfiles
+local function find_shared_context_dir(start_dir)
+    local dir = start_dir
+    local found = nil
+    while dir and dir ~= "/" do
+        if vim.fn.filereadable(dir .. "/.context.utf-8.add") == 1 then
+            found = dir
+        end
+        dir = vim.fn.fnamemodify(dir, ":h")
+    end
+    return found or start_dir
+end
+
+local function global_spellfile()
+    return vim.fn.stdpath("config") .. "/spell/en.utf-8.add"
+end
+
+-- Resolves the context spellfile fresh every call, so it's never stale
+-- relative to when the buffer was first opened.
+local function current_context_spellfile()
+    local file_dir = vim.fn.expand("%:p:h")
+    local context_dir = find_shared_context_dir(file_dir)
+    return context_dir .. "/.context.utf-8.add"
+end
+
+-- Narrows 'spellfile' to a single target, runs the real zg/zw, then
+-- restores the full list so spell-checking keeps reading from both.
+local function add_word_to(target_file, cmd)
+    return function()
+        local saved = vim.opt_local.spellfile:get()
+        vim.opt_local.spellfile = { target_file }
+        vim.cmd("normal! " .. cmd)
+
+        -- force a real reload: clear it first, then set the real list,
+        -- so Vim can't treat this as a no-op reassignment
+        vim.opt_local.spellfile = {}
+        vim.opt_local.spellfile = saved
+    end
+end
+
+local function add_word_to_global(cmd)
+    return add_word_to(global_spellfile(), cmd)
+end
+
+local function add_word_to_context(cmd)
+    return function()
+        local ctx = current_context_spellfile()
+
+        -- refresh the checking list too, in case the context file was
+        -- created/changed since this buffer was last loaded
+        vim.opt_local.spellfile = { global_spellfile(), ctx }
+
+        add_word_to(ctx, cmd)()
+    end
+end
+
+local function with_desc(opts, desc)
+    return vim.tbl_extend("force", opts, { desc = desc })
+end
+
+local function setup_spellfiles()
+    -- used for spell-CHECKING (reading), safe to compute once per buffer-load
+    vim.opt_local.spellfile = { global_spellfile(), current_context_spellfile() }
+
+    local opts = { buffer = true, silent = true }
+
+    vim.keymap.set("n", "zg", add_word_to_global("zg"),
+        with_desc(opts, "Add word to global spellfile"))
+    vim.keymap.set("n", "zq", add_word_to_context("zg"),
+        with_desc(opts, "Add word to context spellfile"))
+
+    vim.keymap.set("n", "zW", add_word_to_global("zw"),
+        with_desc(opts, "Mark word as wrong (global)"))
+    vim.keymap.set("n", "zQ", add_word_to_context("zw"),
+        with_desc(opts, "Mark word as wrong (context)"))
+end
+
+vim.api.nvim_create_autocmd({ "BufReadPost", "BufNewFile" }, {
+    pattern = "*",
+    callback = function()
+        if vim.bo.buftype ~= "" then
+            return
+        end
+        if vim.api.nvim_buf_get_name(0) == "" then
+            return
+        end
+        setup_spellfiles()
+    end,
+})
+
 --- vim:set et sts=4 sw=4:
