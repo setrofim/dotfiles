@@ -456,6 +456,7 @@ require('nvim-treesitter').setup({
 require('nvim-treesitter').install({
     "bash",
     "c",
+    "cpp",
     "dockerfile",
     "git_rebase",
     "gitcommit",
