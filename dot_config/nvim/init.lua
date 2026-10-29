@@ -448,6 +448,22 @@ vim.keymap.set('n', ',fr', telescope.lsp_references, { desc = 'telescope LSP ref
 vim.keymap.set('n', ',fI', telescope.lsp_implementations, { desc = 'telescope LSP implementations' })
 vim.keymap.set('n', ',fD', telescope.diagnostics, { desc = 'telescope diagnostics' })
 
+require('telescope').setup({
+  pickers = {
+    buffers = {
+      mappings = {
+        i = {
+          ["<C-d>"] = require('telescope.actions').delete_buffer,
+        },
+        n = {
+          ["<C-d>"] = require('telescope.actions').delete_buffer,
+          ["dd"] = require('telescope.actions').delete_buffer,
+        },
+      },
+    },
+  },
+})
+
 -- TreeSitter
 require('nvim-treesitter').setup({
     install_dir = vim.fn.stdpath('data') .. '/site',
